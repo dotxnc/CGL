@@ -4,6 +4,7 @@
 
 #include "window.h"
 #include "shader.h"
+#include <linmath.h>
 
 typedef struct {
 	GLuint VBO;

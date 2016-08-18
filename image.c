@@ -1,37 +1,68 @@
 
 #include "image.h"
 
-void cgl_InitImage(Image* image, const char* path)
+void cgl_InitImage(Image* image, const char* path, float x, float y, float z)
 {
-	float vertices[] = {
-		/* Position      */ /* Color    */ /* TexCoords */
-	    -0.5f, -0.5f, 0.0f,   1.0, 0.0, 0.0,   1.0, 1.0,
-		-0.5f,  0.5f, 0.0f,   0.0, 1.0, 0.0,   1.0, 0.0,
-	     0.5f,  0.5f, 0.0f,   0.0, 0.0, 1.0,   0.0, 0.0,
-	     0.5f, -0.5f, 0.0f,   1.0, 1.0, 0.0,   0.0, 1.0
+	GLfloat vertices[] = {
+	    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
+	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 	float texcoords[] = {
 		0.0, 0.0,
 		1.0, 0.0,
 		0.5, 1.0
 	};
-	GLuint indices[] = {
-		0, 1, 3,
-		1, 2, 3
-	};
+
+	image->x = x;
+	image->y = y;
+	image->z = z;
 
 	glGenVertexArrays(1, &image->VAO);
 	glGenBuffers(1, &image->VBO);
-	glGenBuffers(1, &image->EBO);
 
 	glBindVertexArray(image->VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, image->VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, image->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
 
@@ -55,13 +86,6 @@ void cgl_InitImage(Image* image, const char* path)
 
 	SOIL_free_image_data(image->image);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	// for (int i = 0; i < 16; i++) {
-	// 	printf("%d  ", M2[i]);
-	// 	if ((i+1)%4==0) {
-	// 		printf("\n");
-	// 	}
-	// }
 }
 
 void cgl_DrawImage(Image* image, ShaderProgram* prog)
@@ -69,28 +93,37 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog)
 
 	cgl_UseProgram(prog);
 
-	mat4x4 M;
-	mat4x4_identity(M);
-	mat4x4_rotate(M, M, 0.0, 0.0, 1.0, glfwGetTime()*0.6);
-	mat4x4_scale_aniso(M, M, 0.5, 0.5, 0.5);
-	glUniformMatrix4fv(prog->matpos, 1, GL_FALSE, *M);
+	mat4x4 model;
+	mat4x4_identity(model);
+	mat4x4_translate(model, image->x, image->y, image->z);
+	mat4x4_rotate(model, model, 1.0, 0.0, 0.0, glfwGetTime()*0.6);
+	mat4x4 view;
+	mat4x4_identity(view);
+	mat4x4_translate(view, 0.0, 0.0, -3.0);
+	mat4x4 projection;
+	mat4x4_identity(projection);
+	mat4x4_perspective(projection, 45.0, 800/600, 0.1, 100.0);
+
+	GLint modelLoc = glGetUniformLocation(prog->program, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (*model));
+	GLint viewLoc = glGetUniformLocation(prog->program, "view");
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (*view));
+	GLint projLoc = glGetUniformLocation(prog->program, "projection");
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, (*projection));
 
 	glBindVertexArray(image->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, image->VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, image->EBO);
-	glBindVertexArray(0);
+	// glBindVertexArray(0);
 
 	glBindTexture(GL_TEXTURE_2D, image->texture);
 
-	glBindVertexArray(image->VAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+	// glBindVertexArray(image->VAO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
 
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);

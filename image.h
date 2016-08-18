@@ -16,9 +16,11 @@ typedef struct {
 	int width,height;
 	unsigned char* image;
 	GLuint texture;
+
+	float x,y,z;
 } Image;
 
-void cgl_InitImage(Image*, const char*);
+void cgl_InitImage(Image*, const char*, float, float, float);
 void cgl_DrawImage(Image*, ShaderProgram*);
 
 #endif

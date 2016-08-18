@@ -30,14 +30,21 @@ int main(int argc, char** argv)
 	cgl_InitTriangle(&tri, verts, sizeof(verts));
 
 	Image img;
-	cgl_InitImage(&img, "");
+	cgl_InitImage(&img, "", 0.0, 0.0, 1.0);
 
+	Image* img_array;
+	img_array = (Image*)malloc(10*sizeof(Image));
+	cgl_InitImage(&img_array[0], "", 3.5, 0.0, -5.0);
+
+	glfwSwapInterval(1);
+	glEnable(GL_DEPTH_TEST);
 	while (!cgl_WindowShouldClose(&window))
 	{
 		glfwPollEvents();
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.1, 0.1, 0.1, 1.0);
 
+		cgl_DrawImage(&img_array[0], &t_prog);
 		cgl_DrawImage(&img, &t_prog);
 		cgl_DrawTriangle(&tri, &prog);
 		glfwSwapBuffers(window.window);

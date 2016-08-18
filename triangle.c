@@ -26,6 +26,13 @@ void cgl_DrawTriangle(Triangle* t, ShaderProgram* s)
 
 	cgl_UseProgram(s);
 
+	mat4x4 M;
+	mat4x4_identity(M);
+	mat4x4_translate(M, -0.5, 0.5, 0.0);
+	mat4x4_rotate(M, M, 0.0, 0.0, 1.0, -glfwGetTime()*0.6);
+	mat4x4_scale_aniso(M, M, 0.5, 0.5, 0.5);
+	glUniformMatrix4fv(s->matpos, 1, GL_FALSE, *M);
+
 	glBindVertexArray(t->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, t->VBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), 0);

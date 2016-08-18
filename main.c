@@ -14,9 +14,9 @@ int main(int argc, char** argv)
 	}
 
 	float verts[] = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
+    -0.5f, -0.5f, 0.0f, 1.0, 1.0, 1.0,
+     0.5f, -0.5f, 0.0f, 1.0, 1.0, 1.0,
+     0.0f,  0.5f, 0.0f, 1.0, 1.0, 1.0
 	};
 
 	ShaderProgram prog;
@@ -26,8 +26,8 @@ int main(int argc, char** argv)
 	Triangle tri;
 	cgl_InitTriangle(&tri, verts, sizeof(verts));
 
-	Rectangle rect;
-	cgl_InitRectangle(&rect, &window, 10, 10, 10, 10);
+	// Rectangle rect;
+	// cgl_InitRectangle(&rect, &window, 10, 10, 10, 10);
 
 	while (!cgl_WindowShouldClose(&window))
 	{
@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.1, 0.1, 0.1, 1.0);
 
-		cgl_DrawRectangle(&rect, &prog);
+		// cgl_DrawRectangle(&rect, &prog);
 		cgl_DrawTriangle(&tri, &prog);
 		glfwSwapBuffers(window.window);
 	}

@@ -18,8 +18,10 @@ void cgl_DrawTriangle(Triangle* t, ShaderProgram* s)
 {
 	glBindVertexArray(t->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, t->VBO);
-	glVertexAttribPointer(s->vertexpos, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(s->vertexpos);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), 0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)(3*sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

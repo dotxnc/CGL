@@ -33,18 +33,20 @@ void cgl_DrawRectangle(Rectangle* r, ShaderProgram* s)
 	glBindVertexArray(r->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, r->VBO);
 		// regenerate vertices for floating position
-		float c = cos(glfwGetTime());
+		float c = cos(glfwGetTime())*0.9;
 		float vertices[] = {
-			-0.1+c, -0.9, 0.0, // bottom left
-			-0.1+c, -0.7, 0.0, // top left
-			0.1+c, -0.7, 0.0, // top right
-			0.1+c, -0.9, 0.0  // bottom right
+			-0.1+c, -0.9, 0.0, 1.0, 0.0, 0.0, // bottom left
+			-0.1+c, -0.7, 0.0, 0.0, 1.0, 0.0, // top left
+			0.1+c, -0.7, 0.0, 0.0, 0.0, 1.0, // top right
+			0.1+c, -0.9, 0.0, 1.0, 0.0, 1.0 // bottom right
 		};
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r->EBO);
 
-	glVertexAttribPointer(s->vertexpos, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
-	glEnableVertexAttribArray(s->vertexpos);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0*sizeof(float), 0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)(3*sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

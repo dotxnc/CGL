@@ -20,9 +20,11 @@ int main(int argc, char** argv)
      0.0f,  0.5f, 0.0f, 0.0, 0.0, 1.0
 	};
 
+	ShaderProgram t_prog;
+	cgl_InitShaderProgram(&t_prog, "data/texture_vert.glsl", "data/texture_frag.glsl"); // for polygons
+
 	ShaderProgram prog;
-	cgl_InitShaderProgram(&prog, "data/vert.glsl", "data/frag.glsl");
-	cgl_UseProgram(&prog);
+	cgl_InitShaderProgram(&prog, "data/vert.glsl", "data/frag.glsl"); // for untextured polygons
 
 	Triangle tri;
 	cgl_InitTriangle(&tri, verts, sizeof(verts));
@@ -30,18 +32,14 @@ int main(int argc, char** argv)
 	Image img;
 	cgl_InitImage(&img, "");
 
-	// Rectangle rect;
-	// cgl_InitRectangle(&rect, &window, 10, 10, 10, 10);
-
 	while (!cgl_WindowShouldClose(&window))
 	{
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0.1, 0.1, 0.1, 1.0);
 
-		// cgl_DrawRectangle(&rect, &prog);
-		cgl_DrawImage(&img, &prog);
-		// cgl_DrawTriangle(&tri, &prog);
+		cgl_DrawImage(&img, &t_prog);
+		cgl_DrawTriangle(&tri, &prog);
 		glfwSwapBuffers(window.window);
 	}
 

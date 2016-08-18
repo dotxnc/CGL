@@ -60,6 +60,7 @@ void cgl_InitImage(Image* image, const char* path)
 void cgl_DrawImage(Image* image, ShaderProgram* prog)
 {
 
+	cgl_UseProgram(prog);
 
 	glBindVertexArray(image->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, image->VBO);
@@ -78,5 +79,7 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog)
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 }

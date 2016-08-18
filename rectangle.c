@@ -1,8 +1,6 @@
 
 #include "rectangle.h"
 
-static float sway = 0;
-
 void cgl_InitRectangle(Rectangle* rect, GameWindow* window, float x, float y, float w, float h)
 {
 	float vertices[] = {
@@ -42,7 +40,6 @@ void cgl_DrawRectangle(Rectangle* r, ShaderProgram* s)
 			0.1+c, -0.7, 0.0, // top right
 			0.1+c, -0.9, 0.0  // bottom right
 		};
-		// glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r->EBO);
 

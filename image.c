@@ -55,12 +55,25 @@ void cgl_InitImage(Image* image, const char* path)
 
 	SOIL_free_image_data(image->image);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	// for (int i = 0; i < 16; i++) {
+	// 	printf("%d  ", M2[i]);
+	// 	if ((i+1)%4==0) {
+	// 		printf("\n");
+	// 	}
+	// }
 }
 
 void cgl_DrawImage(Image* image, ShaderProgram* prog)
 {
 
 	cgl_UseProgram(prog);
+
+	mat4x4 M;
+	mat4x4_identity(M);
+	mat4x4_rotate(M, M, 0.0, 0.0, 1.0, glfwGetTime()*0.6);
+	mat4x4_scale_aniso(M, M, 0.5, 0.5, 0.5);
+	glUniformMatrix4fv(prog->matpos, 1, GL_FALSE, *M);
 
 	glBindVertexArray(image->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, image->VBO);

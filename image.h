@@ -5,6 +5,7 @@
 #include "window.h"
 #include "shader.h"
 #include "soil/SOIL.h"
+#include <linmath.h>
 
 typedef struct {
 	GLuint VBO;

@@ -22,8 +22,10 @@ void cgl_InitTriangle(Triangle* t, float vertices[], int size)
 
 void cgl_DrawTriangle(Triangle* t, ShaderProgram* s)
 {
+
+
 	cgl_UseProgram(s);
-	
+
 	glBindVertexArray(t->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, t->VBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), 0);

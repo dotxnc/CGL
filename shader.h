@@ -10,6 +10,7 @@ typedef struct {
 	GLuint program;
 	GLint vertexpos;
 	GLint colorpos;
+	GLint matpos;
 } ShaderProgram;
 
 static const char* GetShaderSource(char*);

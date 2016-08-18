@@ -67,6 +67,7 @@ void cgl_InitShaderProgram(ShaderProgram* prog, char* vpath, char* fpath)
 
 	prog->vertexpos = glGetAttribLocation(prog->program, "position");
 	prog->colorpos = glGetAttribLocation(prog->program, "color");
+	prog->matpos = glGetUniformLocation(prog->program, "transform");
 
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);

@@ -5,6 +5,12 @@ void cgl_InitTriangle(Triangle* t, float vertices[], int size)
 	t->VBO = 0;
 	t->size = size;
 
+	float texcoords[] = {
+		0.0, 0.0,
+		1.0, 0.0,
+		0.5, 1.0,
+	};
+
 	glGenVertexArrays(1, &t->VAO);
 
 	glBindVertexArray(t->VAO);
@@ -16,6 +22,13 @@ void cgl_InitTriangle(Triangle* t, float vertices[], int size)
 
 void cgl_DrawTriangle(Triangle* t, ShaderProgram* s)
 {
+
+	mat4x4 trans;
+	mat4x4_rotate(trans, trans, 0.0, 0.0, 1.0, 90.f);
+	mat4x4_scale(trans, trans, 0.5);
+
+	glUniformMatrix4fv(s->matpos, 1, GL_FALSE, *trans);
+
 	glBindVertexArray(t->VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, t->VBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), 0);

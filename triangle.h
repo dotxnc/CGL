@@ -4,9 +4,9 @@
 
 #include "window.h"
 #include "shader.h"
+#include <linmath.h>
 
 typedef struct {
-	float vertices[6];
 	GLuint VBO;
 	GLuint VAO;
 	int size;

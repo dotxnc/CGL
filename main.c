@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 	pitch = yaw = roll = 0;
 
 	GameWindow window;
-	int success = cgl_InitGameWindow(&window, "Test", 800, 600, false);
+	int success = cgl_InitGameWindow(&window, "Test", 1280, 720, false);
 	if (success != 0) {
 		return -1;
 	}
@@ -83,6 +83,12 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 	while (!cgl_WindowShouldClose(&window))
 	{
+
+		if (keys[GLFW_KEY_ESCAPE]) {
+			cgl_DestroyWindow(&window);
+			break;
+		}
+
 		float currentTime = glfwGetTime();
 		deltaTime = currentTime - lastTime;
 		lastTime = currentTime;
@@ -157,6 +163,11 @@ int main(int argc, char** argv)
 			cgl_DrawImage(&img_array[i], &t_prog, &cam);
 		cgl_DrawTriangle(&tri, &prog);
 		glfwSwapBuffers(window.window);
+	}
+
+	for (int i = 0; i < 10; i++) {
+		glDeleteBuffers(1, &img_array[i].VBO);
+		glDeleteVertexArrays(1, &img_array[i].VAO);
 	}
 
 	return 0;

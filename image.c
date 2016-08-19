@@ -99,7 +99,7 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	mat4x4_identity(model);
 	mat4x4_translate(model, image->x, image->y, image->z);
 	mat4x4_rotate(model, model, 1.0, image->scale, 0.5, glfwGetTime()*image->scale);
-	mat4x4_scale_aniso(model, model, image->scale, image->scale, image->scale);
+	// mat4x4_scale_aniso(model, model, image->scale, image->scale, image->scale);
 	mat4x4 view;
 	mat4x4_identity(view);
 	// mat4x4_translate(view, 0.0, 0.0, -5.0);
@@ -108,7 +108,7 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	mat4x4_look_at(view, cam->pos, front, cam->up);
 	mat4x4 projection;
 	mat4x4_identity(projection);
-	mat4x4_perspective(projection, 45.0, 800/600, 0.1, 100.0);
+	mat4x4_perspective(projection, 46.0, 800/600, 0.1, 100.0);
 
 	GLint modelLoc = glGetUniformLocation(prog->program, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (*model));

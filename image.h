@@ -4,8 +4,10 @@
 
 #include "window.h"
 #include "shader.h"
+#include "camera.h"
 #include "soil/SOIL.h"
 #include <linmath.h>
+#include <time.h>
 
 typedef struct {
 	GLuint VBO;
@@ -18,9 +20,10 @@ typedef struct {
 	GLuint texture;
 
 	float x,y,z;
+	float scale;
 } Image;
 
 void cgl_InitImage(Image*, const char*, float, float, float);
-void cgl_DrawImage(Image*, ShaderProgram*);
+void cgl_DrawImage(Image*, ShaderProgram*, Camera*);
 
 #endif

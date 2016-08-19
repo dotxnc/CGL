@@ -22,8 +22,6 @@ void cgl_InitTriangle(Triangle* t, float vertices[], int size)
 
 void cgl_DrawTriangle(Triangle* t, ShaderProgram* s)
 {
-
-
 	cgl_UseProgram(s);
 
 	mat4x4 M;

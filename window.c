@@ -15,6 +15,8 @@ int cgl_InitGameWindow(GameWindow* window, char* title, int width, int height, b
 	window->width = width;
 	window->height = height;
 
+	glfwSetInputMode(window->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	glfwMakeContextCurrent(window->window);
 
 	// init glew

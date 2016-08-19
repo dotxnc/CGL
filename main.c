@@ -6,13 +6,43 @@
 #include "rectangle.h"
 #include "image.h"
 
+bool keys[1024];
+float pitch,yaw,roll;
+bool firstMouse = true;
+float lastx = 400, lasty = 300;
+
+void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
+{
+	if (action == GLFW_PRESS)
+		keys[key] = true;
+	else if (action == GLFW_RELEASE)
+		keys[key] = false;
+}
+
+void mouse_input(GLFWwindow* window, double xpos, double ypos)
+{
+}
+
+float radians(float r) {
+	return r * (M_PI/ 180.0 );
+}
+
 int main(int argc, char** argv)
 {
+	srand(time(NULL));
+
+	pitch = yaw = roll = 0;
+
 	GameWindow window;
 	int success = cgl_InitGameWindow(&window, "Test", 800, 600, false);
 	if (success != 0) {
 		return -1;
 	}
+	glfwSetKeyCallback(window.window, key_callback);
+	glfwSetCursorPosCallback(window.window, mouse_input);
+
+	float deltaTime = 0;
+	float lastTime = glfwGetTime();
 
 	float verts[] = {
     -0.5f, -0.5f, 0.0f, 1.0, 0.0, 0.0,
@@ -26,6 +56,9 @@ int main(int argc, char** argv)
 	ShaderProgram prog;
 	cgl_InitShaderProgram(&prog, "data/vert.glsl", "data/frag.glsl"); // for untextured polygons
 
+	Camera cam;
+	cgl_InitCamera(&cam, 0.0, 0.0, 5.0);
+
 	Triangle tri;
 	cgl_InitTriangle(&tri, verts, sizeof(verts));
 
@@ -34,18 +67,94 @@ int main(int argc, char** argv)
 
 	Image* img_array;
 	img_array = (Image*)malloc(10*sizeof(Image));
-	cgl_InitImage(&img_array[0], "", 3.5, 0.0, -5.0);
+	cgl_InitImage(&img_array[0], "", 0.0f,  0.0f,  0.0f);
+	cgl_InitImage(&img_array[1], "", 2.0f,  5.0f, -15.0f);
+	cgl_InitImage(&img_array[2], "", -1.5f, -2.2f, -2.5f);
+	cgl_InitImage(&img_array[3], "", -3.8f, -2.0f, -12.3f);
+	cgl_InitImage(&img_array[4], "", 2.4f, -0.4f, -3.5f);
+	cgl_InitImage(&img_array[5], "", -1.7f,  3.0f, -7.5f);
+	cgl_InitImage(&img_array[6], "", 1.3f, -2.0f, -2.5f);
+	cgl_InitImage(&img_array[7], "", 1.5f,  2.0f, -2.5f);
+	cgl_InitImage(&img_array[8], "", 1.5f,  0.2f, -1.5f);
+	cgl_InitImage(&img_array[9], "", -1.3f,  1.0f, -1.5f);
+
 
 	glfwSwapInterval(1);
 	glEnable(GL_DEPTH_TEST);
 	while (!cgl_WindowShouldClose(&window))
 	{
+		float currentTime = glfwGetTime();
+		deltaTime = currentTime - lastTime;
+		lastTime = currentTime;
+
+		double xpos,ypos;
+		glfwGetCursorPos(window.window, &xpos, &ypos);
+
+		if(firstMouse)
+		{
+			lastx = xpos;
+			lasty = ypos;
+			firstMouse = false;
+		}
+
+		float xoffset = xpos-lastx;
+		float yoffset = lasty-ypos;
+		lastx = xpos;
+		lasty = ypos;
+
+		xoffset *= 0.05f;
+		yoffset *= 0.05f;
+
+		yaw += xoffset;
+		pitch += yoffset;
+
+		if (pitch > 89)
+			pitch = 89;
+		if (pitch < -89)
+			pitch = -89;
+
+		vec3 front;
+		front[0] = (cos(radians(pitch)) * cos(radians(yaw)));
+		front[1] = (sin(radians(pitch)));
+		front[2] = (cos(radians(pitch)) * sin(radians(yaw)));
+		vec3_norm(cam.front, front);
+
 		glfwPollEvents();
+		if (keys[GLFW_KEY_W]) {
+			vec3 newpos;
+			for (int i=0;i<3;i++) {newpos[i]=cam.front[i]*(5.0*deltaTime);}
+			vec3_add(cam.pos, cam.pos, newpos);
+		}
+		if (keys[GLFW_KEY_S]) {
+			vec3 newpos;
+			for (int i=0;i<3;i++) {newpos[i]=cam.front[i]*(5.0*deltaTime);}
+			vec3_sub(cam.pos, cam.pos, newpos);
+		}
+		if (keys[GLFW_KEY_A]) {
+			vec3 newpos;
+			vec3_mul_cross(newpos, cam.front, cam.up);
+			vec3_norm(newpos, newpos);
+			newpos[0] *= 5.0 * deltaTime;
+			newpos[1] *= 5.0 * deltaTime;
+			newpos[2] *= 5.0 * deltaTime;
+			vec3_sub(cam.pos, cam.pos, newpos);
+		}
+		if (keys[GLFW_KEY_D]) {
+			vec3 newpos;
+			vec3_mul_cross(newpos, cam.front, cam.up);
+			vec3_norm(newpos, newpos);
+			newpos[0] *= 5.0 * deltaTime;
+			newpos[1] *= 5.0 * deltaTime;
+			newpos[2] *= 5.0 * deltaTime;
+			vec3_add(cam.pos, cam.pos, newpos);
+		}
+
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.1, 0.1, 0.1, 1.0);
 
-		cgl_DrawImage(&img_array[0], &t_prog);
-		cgl_DrawImage(&img, &t_prog);
+		for (int i = 0; i < 10; i++)
+			cgl_DrawImage(&img_array[i], &t_prog, &cam);
 		cgl_DrawTriangle(&tri, &prog);
 		glfwSwapBuffers(window.window);
 	}

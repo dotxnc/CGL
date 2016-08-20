@@ -12,6 +12,7 @@ float pitch,yaw,roll;
 bool firstMouse = true;
 float lastx = 400, lasty = 300;
 bool capturemouse = false;
+bool interval = true;
 
 void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 {
@@ -21,6 +22,9 @@ void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 		keys[key] = false;
 	if (action == GLFW_PRESS && key == GLFW_KEY_TAB)
 		capturemouse = !capturemouse;
+	if (action == GLFW_PRESS && key == GLFW_KEY_F1) {
+		interval = !interval;
+	}
 }
 
 float radians(float r) {
@@ -55,7 +59,7 @@ int main(int argc, char** argv)
 	cgl_InitShaderProgram(&prog, "data/vert.glsl", "data/frag.glsl"); // for untextured polygons
 	ShaderProgram text;
 	cgl_InitShaderProgram(&text, "data/text_vert.glsl", "data/text_frag.glsl"); // for text
-	
+
 	Font font;
 	cgl_InitFont(&font, "data/font.ttf");
 
@@ -82,16 +86,17 @@ int main(int argc, char** argv)
 	cgl_InitImage(&img_array[9], "", -1.3f,  1.0f, -1.5f);
 
 
-	glfwSwapInterval(1);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	while (!cgl_WindowShouldClose(&window))
 	{
+		glfwSwapInterval((int)interval);
+
 		int w,h;
 		glfwGetWindowSize(window.window, &w, &h);
 		cam.aspect = (float)w/h;
-		
+
 		if (capturemouse)
 			glfwSetInputMode(window.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		else
@@ -101,7 +106,7 @@ int main(int argc, char** argv)
 			cgl_DestroyWindow(&window);
 			break;
 		}
-		
+
 		if (capturemouse)
 		{
 			double xpos,ypos;
@@ -174,7 +179,7 @@ int main(int argc, char** argv)
 		for (int i = 0; i < 10; i++)
 			cgl_DrawImage(&img_array[i], &t_prog, &cam);
 		// cgl_DrawTriangle(&tri, &prog);
-		
+
 		// Print debug data
 		char debug_delta[512] = {0};
 		sprintf(debug_delta, "Delta = %0.8f", deltaTime);
@@ -182,7 +187,9 @@ int main(int argc, char** argv)
 		sprintf(debug_fps, "FPS = %0.1f", 1.0/deltaTime);
 		char debug_capture[512] = {0};
 		sprintf(debug_capture, "Capture Mouse = %s", capturemouse ? "true" : "false");
-		
+		char debug_interval[512] = {0};
+		sprintf(debug_interval, "VSYNC = %s", interval ? "true" : "false");
+
 		vec3 textcolor;
 		textcolor[0] = 0.7f;
 		textcolor[1] = 0.7f;
@@ -191,7 +198,12 @@ int main(int argc, char** argv)
 		cgl_DrawText(&font, &text, debug_delta, 10, 25, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, debug_capture, 10, 40, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, debug_fps, 10, 55, 0.3f, textcolor);
-		
+		cgl_DrawText(&font, &text, debug_interval, 10, 70, 0.3f, textcolor);
+
+		// help text
+		cgl_DrawText(&font, &text, "F1 = Toggle Vsync", 10, window.height-20, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, "Tab = Toggle Mouse Capture", 10, window.height-35, 0.3f, textcolor);
+
 		// update buffers
 		glfwSwapBuffers(window.window);
 

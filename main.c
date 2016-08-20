@@ -178,9 +178,25 @@ int main(int argc, char** argv)
 		for (int i = 0; i < 10; i++)
 			cgl_DrawImage(&img_array[i], &t_prog, &cam);
 		// cgl_DrawTriangle(&tri, &prog);
+		
+		// Print debug data
+		char debug_delta[512] = {0};
+		sprintf(debug_delta, "Delta = %0.8f", deltaTime);
+		char debug_fps[512] = {0};
+		sprintf(debug_fps, "FPS = %0.1f", 1.0/deltaTime);
+		char debug_capture[512] = {0};
+		sprintf(debug_capture, "Capture Mouse = %s", capturemouse ? "true" : "false");
+		
 		vec3 textcolor;
 		textcolor[0] = 0.7f;
-		cgl_DrawText(&font, &text, "This is a test", 10, 10, 0.3f, textcolor);
+		textcolor[1] = 0.7f;
+		textcolor[2] = 0.7f;
+		cgl_DrawText(&font, &text, "OPENGL", 10, 10, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, debug_delta, 10, 25, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, debug_capture, 10, 40, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, debug_fps, 10, 55, 0.3f, textcolor);
+		
+		// update buffers
 		glfwSwapBuffers(window.window);
 	}
 

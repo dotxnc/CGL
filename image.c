@@ -108,7 +108,7 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	mat4x4_look_at(view, cam->pos, front, cam->up);
 	mat4x4 projection;
 	mat4x4_identity(projection);
-	mat4x4_perspective(projection, 46.0, 800/600, 0.1, 100.0);
+	mat4x4_perspective(projection, 45.0, cam->aspect, 0.01, 100.0);
 
 	GLint modelLoc = glGetUniformLocation(prog->program, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (*model));

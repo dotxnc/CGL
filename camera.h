@@ -8,6 +8,7 @@ typedef struct {
 	vec3 pos;
 	vec3 front;
 	vec3 up;
+	float aspect;
 } Camera;
 
 void cgl_InitCamera(Camera*, float, float, float);

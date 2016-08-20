@@ -13,4 +13,6 @@ void cgl_InitCamera(Camera* cam, float x, float y, float z)
 	cam->up[0] = 0.0;
 	cam->up[1] = 1.0;
 	cam->up[2] = 0.0;
+	
+	cam->aspect = 0;
 }

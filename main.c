@@ -5,11 +5,13 @@
 #include "gamestate.h"
 #include "rectangle.h"
 #include "image.h"
+#include "font.h"
 
 bool keys[1024];
 float pitch,yaw,roll;
 bool firstMouse = true;
 float lastx = 400, lasty = 300;
+bool capturemouse = false;
 
 void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 {
@@ -17,10 +19,8 @@ void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 		keys[key] = true;
 	else if (action == GLFW_RELEASE)
 		keys[key] = false;
-}
-
-void mouse_input(GLFWwindow* window, double xpos, double ypos)
-{
+	if (action == GLFW_PRESS && key == GLFW_KEY_TAB)
+		capturemouse = !capturemouse;
 }
 
 float radians(float r) {
@@ -34,12 +34,11 @@ int main(int argc, char** argv)
 	pitch = yaw = roll = 0;
 
 	GameWindow window;
-	int success = cgl_InitGameWindow(&window, "Test", 1280, 720, false);
+	int success = cgl_InitGameWindow(&window, "OPENGL BITCHES", 1280, 720, false);
 	if (success != 0) {
 		return -1;
 	}
 	glfwSetKeyCallback(window.window, key_callback);
-	glfwSetCursorPosCallback(window.window, mouse_input);
 
 	float deltaTime = 0;
 	float lastTime = glfwGetTime();
@@ -52,9 +51,13 @@ int main(int argc, char** argv)
 
 	ShaderProgram t_prog;
 	cgl_InitShaderProgram(&t_prog, "data/texture_vert.glsl", "data/texture_frag.glsl"); // for polygons
-
 	ShaderProgram prog;
 	cgl_InitShaderProgram(&prog, "data/vert.glsl", "data/frag.glsl"); // for untextured polygons
+	ShaderProgram text;
+	cgl_InitShaderProgram(&text, "data/text_vert.glsl", "data/text_frag.glsl"); // for text
+	
+	Font font;
+	cgl_InitFont(&font, "data/font.ttf");
 
 	Camera cam;
 	cgl_InitCamera(&cam, 0.0, 0.0, 5.0);
@@ -81,8 +84,18 @@ int main(int argc, char** argv)
 
 	glfwSwapInterval(1);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	while (!cgl_WindowShouldClose(&window))
 	{
+		int w,h;
+		glfwGetWindowSize(window.window, &w, &h);
+		cam.aspect = (float)w/h;
+		
+		if (capturemouse)
+			glfwSetInputMode(window.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		else
+			glfwSetInputMode(window.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 		if (keys[GLFW_KEY_ESCAPE]) {
 			cgl_DestroyWindow(&window);
@@ -92,38 +105,41 @@ int main(int argc, char** argv)
 		float currentTime = glfwGetTime();
 		deltaTime = currentTime - lastTime;
 		lastTime = currentTime;
-
-		double xpos,ypos;
-		glfwGetCursorPos(window.window, &xpos, &ypos);
-
-		if(firstMouse)
+		
+		if (capturemouse)
 		{
+			double xpos,ypos;
+			glfwGetCursorPos(window.window, &xpos, &ypos);
+
+			if(firstMouse)
+			{
+				lastx = xpos;
+				lasty = ypos;
+				firstMouse = false;
+			}
+
+			float xoffset = xpos-lastx;
+			float yoffset = lasty-ypos;
 			lastx = xpos;
 			lasty = ypos;
-			firstMouse = false;
+
+			xoffset *= 0.05f;
+			yoffset *= 0.05f;
+
+			yaw += xoffset;
+			pitch += yoffset;
+
+			if (pitch > 89)
+				pitch = 89;
+			if (pitch < -89)
+				pitch = -89;
+
+			vec3 front;
+			front[0] = (cos(radians(pitch)) * cos(radians(yaw)));
+			front[1] = (sin(radians(pitch)));
+			front[2] = (cos(radians(pitch)) * sin(radians(yaw)));
+			vec3_norm(cam.front, front);
 		}
-
-		float xoffset = xpos-lastx;
-		float yoffset = lasty-ypos;
-		lastx = xpos;
-		lasty = ypos;
-
-		xoffset *= 0.05f;
-		yoffset *= 0.05f;
-
-		yaw += xoffset;
-		pitch += yoffset;
-
-		if (pitch > 89)
-			pitch = 89;
-		if (pitch < -89)
-			pitch = -89;
-
-		vec3 front;
-		front[0] = (cos(radians(pitch)) * cos(radians(yaw)));
-		front[1] = (sin(radians(pitch)));
-		front[2] = (cos(radians(pitch)) * sin(radians(yaw)));
-		vec3_norm(cam.front, front);
 
 		glfwPollEvents();
 		if (keys[GLFW_KEY_W]) {
@@ -161,7 +177,10 @@ int main(int argc, char** argv)
 
 		for (int i = 0; i < 10; i++)
 			cgl_DrawImage(&img_array[i], &t_prog, &cam);
-		cgl_DrawTriangle(&tri, &prog);
+		// cgl_DrawTriangle(&tri, &prog);
+		vec3 textcolor;
+		textcolor[0] = 0.7f;
+		cgl_DrawText(&font, &text, "This is a test", 10, 10, 0.3f, textcolor);
 		glfwSwapBuffers(window.window);
 	}
 

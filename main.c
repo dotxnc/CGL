@@ -14,6 +14,8 @@ float lastx = 400, lasty = 300;
 bool capturemouse = false;
 bool interval = true;
 
+// this is a test
+
 void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 {
 	if (action == GLFW_PRESS)

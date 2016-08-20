@@ -101,10 +101,6 @@ int main(int argc, char** argv)
 			cgl_DestroyWindow(&window);
 			break;
 		}
-
-		float currentTime = glfwGetTime();
-		deltaTime = currentTime - lastTime;
-		lastTime = currentTime;
 		
 		if (capturemouse)
 		{
@@ -198,6 +194,10 @@ int main(int argc, char** argv)
 		
 		// update buffers
 		glfwSwapBuffers(window.window);
+
+		float currentTime = glfwGetTime();
+		deltaTime = currentTime - lastTime;
+		lastTime = currentTime;
 	}
 
 	for (int i = 0; i < 10; i++) {

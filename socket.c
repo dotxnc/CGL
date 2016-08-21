@@ -32,6 +32,8 @@ void cgl_InitSocket(Socket* _socket, const char* ip, int port, CGL_SOCKET_TYPE t
 
 void cgl_UpdateSocket(Socket* _socket)
 {
+	// TODO: invoke callbacks
+	
 	if (_socket == NULL) return;
 	if (SDLNet_UDP_Recv(_socket->socket, _socket->packet))
 	{
@@ -64,13 +66,24 @@ void cgl_UpdateSocket(Socket* _socket)
 					
 					printf("SERV: new client with id %d connected from %d.%d.%d.%d:%d\n", client.id, octet[0], octet[1], octet[2], octet[3], _socket->packet->address.port);
 					
-					// tell all current clients about new client
 					for (int i = 0; i < _socket->numclients; i++) {
-						_cgl_clientdata cdata = {CGL_CLIENTDATA, client.id};
-						_cgl_sendtoclient(_socket, _socket->clients[i].addr, &cdata, sizeof(cdata));
-						if (_socket->clients[i].id != client.id) {
+						if (_socket->clients[i].id != client.id) { // send to all clients except new one
+							// tell all current clients about new client
+							_cgl_clientdata cdata = {CGL_CLIENTDATA, client.id};
+							_cgl_sendtoclient(_socket, _socket->clients[i].addr, &cdata, sizeof(cdata));
+							
+							// tell new client about previous clients
+							cdata.id = _socket->clients[i].id;
+							_cgl_sendtoclient(_socket, _socket->clients[client.id-1].addr, &cdata, sizeof(cdata));
 						}
 					}
+					
+					_cgl_clientdata localid = {CGL_LOCALID, client.id};
+					_cgl_sendtoclient(_socket, client.addr, &localid, sizeof(localid));
+					
+					if (_socket->callback_conn!=NULL)
+						_socket->callback_conn(client.id);
+					
 				} break;
 				case CGL_DISCONNECT: {
 				
@@ -80,13 +93,45 @@ void cgl_UpdateSocket(Socket* _socket)
 				}
 			} break;
 			default:
+				if (_socket->callback_recv!=NULL)
+					_socket->callback_recv(_socket->packet);
 				break;
 			}
 			
 		}
 		else if (_socket->type == CGL_CLIENT)
 		{
-			// TODO: invoke callbacks
+			
+			char* data = (char*)malloc(_socket->packet->len);
+			memcpy(data, _socket->packet->data, _socket->packet->len);
+			int type = abs(data[0]);
+			
+			switch (type)
+			{
+			case CGL_LOCALID: {
+				_cgl_clientdata packet;
+				memcpy(data, &packet, sizeof(_cgl_clientdata));
+				_socket->localID = packet.id;
+			} break;
+			case CGL_CLIENTDATA: {
+				_cgl_clientdata packet;
+				memcpy(data, &packet, sizeof(_cgl_clientdata));
+				
+				Client client;
+				client.id = packet.id;
+				_socket->clients[_socket->numclients] = client;
+				_socket->numclients++;
+				
+				if (_socket->callback_conn!=NULL)
+					_socket->callback_conn(client.id);
+				
+			} break;
+			default:
+				if (_socket->callback_recv!=NULL)
+					_socket->callback_recv(_socket->packet);
+				break;
+			}
+			
 			printf("CLI: received data\n");
 		}
 	}
@@ -107,6 +152,15 @@ void cgl_SendSocket(Socket* _socket, void* data, unsigned int size)
 	SDLNet_UDP_Send(_socket->socket, -1, &tosend);
 	
 }
+
+void cgl_SetCallbackSocket(Socket* _socket, const void* recv, const void* conn, const void* dconn)
+{
+	_socket->callback_recv = recv;
+	_socket->callback_conn = conn;
+	_socket->callback_dconn = dconn;
+}
+
+/// Private cgl functions
 
 void _cgl_sendtoclient(Socket* _socket, IPaddress to, void* data, unsigned int size)
 {

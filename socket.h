@@ -13,16 +13,17 @@
 
 static bool init_sdl_net=true;
 
-typedef void(*socket_recv)();
-typedef void(*socket_conn)();
-typedef void(*socket_dconn)();
+typedef unsigned int (*socket_recv)(UDPpacket*);
+typedef unsigned int (*socket_conn)(int);
+typedef unsigned int (*socket_dconn)(int);
 
 typedef enum
 {
-	CGL_CLIENTDATA = 125,
-	CGL_CONNECTION = 126,
-	CGL_CONNECT = 127,
-	CGL_DISCONNECT = 128
+	CGL_LOCALID     = 124,
+	CGL_CLIENTDATA  = 125,
+	CGL_CONNECTION  = 126,
+	CGL_CONNECT     = 127,
+	CGL_DISCONNECT  = 128
 } CGL_PACKET_TYPE;
 
 typedef struct { CGL_PACKET_TYPE type; CGL_PACKET_TYPE data; } _cgl_connection;
@@ -45,7 +46,7 @@ typedef struct {
 	IPaddress        address;
 	Client           clients[16];
 	int              numclients;
-	int              ID;
+	int              localID;
 	// callbacks
 	socket_recv      callback_recv;
 	socket_conn      callback_conn;
@@ -55,10 +56,11 @@ typedef struct {
 void cgl_InitSocket(Socket*, const char*, int, CGL_SOCKET_TYPE);
 void cgl_UpdateSocket(Socket*);
 void cgl_SendSocket(Socket*, void*, unsigned int size);
-void cgl_SetCallbackSocket(Socket*, socket_recv, socket_conn, socket_dconn);
+void cgl_SetCallbackSocket(Socket*, const void*, const void*, const void*);
 
 // private cgl network functions
 static void _cgl_getclient(Socket*, IPaddress);
 static void _cgl_sendtoclient(Socket*, IPaddress, void*, unsigned int);
+static Client _cgl_getclientid(Socket*, int);
 
 #endif

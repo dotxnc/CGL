@@ -209,6 +209,17 @@ int main(int argc, char** argv)
 		sprintf(debug_server, "Server Running = %s", (server.socket==NULL) ? "false" : "true");
 		char debug_client[512] = {0};
 		sprintf(debug_client, "Client Running = %s", (client.socket==NULL) ? "false" : "true");
+		
+		char debug_server_clients[512] = {0};
+		if (server.socket!=NULL)
+			sprintf(debug_server_clients, "Clients Server Side: %d", server.numclients);
+		else
+			sprintf(debug_server_clients, "Clients Server Side: %d", 0);
+		char debug_client_clients[512] = {0};
+		if (client.socket!=NULL)
+			sprintf(debug_client_clients, "Clients Client Side: %d", client.numclients);
+		else
+			sprintf(debug_client_clients, "Clients Client Side: %d", 0);
 
 		vec3 textcolor;
 		textcolor[0] = 0.7f;
@@ -226,10 +237,14 @@ int main(int argc, char** argv)
 		cgl_DrawText(&font, &text, "NETWORK", window.width-200, 10, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, debug_server, window.width-200, 25, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, debug_client, window.width-200, 40, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, debug_server_clients, window.width-200, 55, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, debug_client_clients, window.width-200, 70, 0.3f, textcolor);
 
 		// help text
 		cgl_DrawText(&font, &text, "F1 = Toggle Vsync", 10, window.height-20, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, "Tab = Toggle Mouse Capture", 10, window.height-35, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, "F2 = Start Server", 10, window.height-50, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, "F3 = Start Client", 10, window.height-65, 0.3f, textcolor);
 
 		// update buffers
 		glfwSwapBuffers(window.window);

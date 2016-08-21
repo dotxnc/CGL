@@ -120,5 +120,5 @@ void _cgl_sendtoclient(Socket* _socket, IPaddress to, void* data, unsigned int s
 	tosend.address.port = to.port;
 	memcpy(tosend.data, data, size);
 	
-	SDLNet_UDP_Send(_socket->socket, 1, &tosend);
+	SDLNet_UDP_Send(_socket->socket, -1, &tosend);
 }

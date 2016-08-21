@@ -4,7 +4,9 @@ clib = \
 	-lwinmm \
 	-lgdi32 \
 	-lglew.dll \
-	-lfreetype
+	-lfreetype \
+	-lws2_32 \
+	-lSDL2_net
 cflags = -LC:/Bin/mingw/lib -IC:/Bin/mingw/include
 
 src = $(wildcard *.c) $(wildcard soil/*.c)# $(wildcard glmatrix/*.c)

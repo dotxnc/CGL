@@ -6,6 +6,7 @@
 #include "rectangle.h"
 #include "image.h"
 #include "font.h"
+#include "socket.h"
 
 bool keys[1024];
 float pitch,yaw,roll;
@@ -86,13 +87,36 @@ int main(int argc, char** argv)
 	cgl_InitImage(&img_array[7], "", 1.5f,  2.0f, -2.5f);
 	cgl_InitImage(&img_array[8], "", 1.5f,  0.2f, -1.5f);
 	cgl_InitImage(&img_array[9], "", -1.3f,  1.0f, -1.5f);
-
+	
+	Socket server;
+	cgl_InitSocket(&server, "127.0.0.1", 27015, CGL_SERVER);
+	
+	Socket client;
+	cgl_InitSocket(&client, "192.168.1.101", 27015, CGL_CLIENT);
+	
+	test t1 = {
+		123,
+		10,
+		20.5f,
+		30.5
+	};
+	test t2 = {
+		123,
+		101,
+		204.5f,
+		302.5
+	};
+	
+	cgl_SendSocket(&client, &t1, sizeof(test));
+	cgl_SendSocket(&client, &t2, sizeof(test));
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	while (!cgl_WindowShouldClose(&window))
 	{
+		// cgl_SendSocket(&client, &t2);
+		
 		glfwSwapInterval((int)interval);
 
 		int w,h;
@@ -208,6 +232,9 @@ int main(int argc, char** argv)
 
 		// update buffers
 		glfwSwapBuffers(window.window);
+		
+		cgl_UpdateSocket(&server);
+		cgl_UpdateSocket(&client);
 
 		float currentTime = glfwGetTime();
 		deltaTime = currentTime - lastTime;

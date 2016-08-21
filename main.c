@@ -15,6 +15,9 @@ float lastx = 400, lasty = 300;
 bool capturemouse = false;
 bool interval = true;
 
+Socket server;
+Socket client;
+
 // this is a test
 
 void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
@@ -27,6 +30,11 @@ void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 		capturemouse = !capturemouse;
 	if (action == GLFW_PRESS && key == GLFW_KEY_F1) {
 		interval = !interval;
+	}
+	if (action == GLFW_PRESS && key == GLFW_KEY_F2 && server.socket==NULL) {
+		cgl_InitSocket(&server, "127.0.0.1", 27015, CGL_SERVER);
+	} else if (action == GLFW_PRESS && key == GLFW_KEY_F3 && client.socket==NULL) {
+		cgl_InitSocket(&client, "192.168.1.101", 27015, CGL_CLIENT);
 	}
 }
 
@@ -88,27 +96,9 @@ int main(int argc, char** argv)
 	cgl_InitImage(&img_array[8], "", 1.5f,  0.2f, -1.5f);
 	cgl_InitImage(&img_array[9], "", -1.3f,  1.0f, -1.5f);
 	
-	Socket server;
-	cgl_InitSocket(&server, "127.0.0.1", 27015, CGL_SERVER);
+	// cgl_InitSocket(&server, "127.0.0.1", 27015, CGL_SERVER);
 	
-	Socket client;
-	cgl_InitSocket(&client, "192.168.1.101", 27015, CGL_CLIENT);
-	
-	test t1 = {
-		123,
-		10,
-		20.5f,
-		30.5
-	};
-	test t2 = {
-		123,
-		101,
-		204.5f,
-		302.5
-	};
-	
-	cgl_SendSocket(&client, &t1, sizeof(test));
-	cgl_SendSocket(&client, &t2, sizeof(test));
+	// cgl_InitSocket(&client, "192.168.1.101", 27015, CGL_CLIENT);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -215,16 +205,27 @@ int main(int argc, char** argv)
 		sprintf(debug_capture, "Capture Mouse = %s", capturemouse ? "true" : "false");
 		char debug_interval[512] = {0};
 		sprintf(debug_interval, "VSYNC = %s", interval ? "true" : "false");
+		char debug_server[512] = {0};
+		sprintf(debug_server, "Server Running = %s", (server.socket==NULL) ? "false" : "true");
+		char debug_client[512] = {0};
+		sprintf(debug_client, "Client Running = %s", (client.socket==NULL) ? "false" : "true");
 
 		vec3 textcolor;
 		textcolor[0] = 0.7f;
 		textcolor[1] = 0.7f;
 		textcolor[2] = 0.7f;
+		
+		// opengl debug
 		cgl_DrawText(&font, &text, "OPENGL", 10, 10, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, debug_delta, 10, 25, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, debug_capture, 10, 40, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, debug_fps, 10, 55, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, debug_interval, 10, 70, 0.3f, textcolor);
+		
+		// networl debug
+		cgl_DrawText(&font, &text, "NETWORK", window.width-200, 10, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, debug_server, window.width-200, 25, 0.3f, textcolor);
+		cgl_DrawText(&font, &text, debug_client, window.width-200, 40, 0.3f, textcolor);
 
 		// help text
 		cgl_DrawText(&font, &text, "F1 = Toggle Vsync", 10, window.height-20, 0.3f, textcolor);

@@ -14,7 +14,7 @@ float pitch,yaw,roll;
 bool firstMouse = true;
 float lastx = 400, lasty = 300;
 bool capturemouse = false;
-bool interval = false;
+bool interval = true;
 Image* img_array;
 
 Socket server;

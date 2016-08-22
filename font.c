@@ -79,7 +79,7 @@ void cgl_DrawText(Font* font, ShaderProgram* shader, const char* text, float x, 
 	// ortho matrix for text
 	mat4x4 ortho;
 	mat4x4_identity(ortho);
-	mat4x4_ortho(ortho, 0.0, 1280, 0.0, 720, 0, 100);
+	mat4x4_ortho(ortho, 0.0, 800, 0.0, 600, 0, 100);
 	glUniformMatrix4fv(glGetUniformLocation(shader->program, "projection"), 1, GL_FALSE, *ortho);
 	
 	glUniform3f(glGetUniformLocation(shader->program, "textColor"), color[0], color[1], color[2]);

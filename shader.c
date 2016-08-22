@@ -22,16 +22,16 @@ const char* GetShaderSource(char* path)
 		buffer[length-1] = '\0';
 	}
 
-	printf("%s\n\n", buffer);
+	// printf("%s\n\n", buffer);
 
 	return buffer;
 }
 
 void cgl_InitShaderProgram(ShaderProgram* prog, char* vpath, char* fpath)
 {
-	printf("VERTEX SHADER\n");
+	// printf("VERTEX SHADER\n");
 	const char* vsource = GetShaderSource(vpath);
-	printf("FRAGMENT SHADER\n");
+	// printf("FRAGMENT SHADER\n");
 	const char* fsource = GetShaderSource(fpath);
 
 	if (!vsource || !fsource) {

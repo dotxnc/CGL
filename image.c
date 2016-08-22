@@ -51,12 +51,16 @@ void cgl_InitImage(Image* image, const char* path, float x, float y, float z)
 		1.0, 0.0,
 		0.5, 1.0
 	};
-
+	
 	image->x = x;
 	image->y = y;
 	image->z = z;
+	
+	image->rx = 0;
+	image->ry = 0;
+	image->rz = 0;
 	image->scale = (float)rand() / (float)RAND_MAX;
-	printf("%0.2f : ", image->scale);
+	// printf("%0.2f : ", image->scale);
 
 	glGenVertexArrays(1, &image->VAO);
 	glGenBuffers(1, &image->VBO);
@@ -80,7 +84,7 @@ void cgl_InitImage(Image* image, const char* path, float x, float y, float z)
 
 	image->image = SOIL_load_image("data/container.jpg", &image->width, &image->height, 0, SOIL_LOAD_RGB);
 	if (image->image) {
-		printf("%d:%d\n", image->width, image->height);
+		// printf("%d:%d\n", image->width, image->height);
 	}
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->image);
@@ -98,7 +102,10 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	mat4x4 model;
 	mat4x4_identity(model);
 	mat4x4_translate(model, image->x, image->y, image->z);
-	// mat4x4_rotate(model, model, 1.0, image->scale, 0.5, glfwGetTime()*image->scale);
+	// RX = Pitch, RY = Yaw, RZ = Roll
+	mat4x4_rotate(model, model, 1.0, 0.0, 0.0, -image->rx * (M_PI/ 180.0 ));
+	mat4x4_rotate(model, model, 0.0, 1.0, 0.0, -image->ry * (M_PI/ 180.0 ));
+	mat4x4_rotate(model, model, 0.0, 0.0, 1.0, -image->rz * (M_PI/ 180.0 ));
 	// mat4x4_scale_aniso(model, model, image->scale, image->scale, image->scale);
 	mat4x4 view;
 	mat4x4_identity(view);

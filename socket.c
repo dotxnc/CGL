@@ -62,7 +62,7 @@ void cgl_UpdateSocket(Socket* _socket)
 					for (int i=0; i<4; i++)
 						octet[i] = ( addr >> (i*8) ) & 0xFF;
 					
-					printf("SERV: new client with id %d connected from %d.%d.%d.%d:%d\n", client.id, octet[0], octet[1], octet[2], octet[3], _socket->packet->address.port);
+					// printf("SERV: new client with id %d connected from %d.%d.%d.%d:%d\n", client.id, octet[0], octet[1], octet[2], octet[3], _socket->packet->address.port);
 					
 					for (int i = 0; i < _socket->numclients; i++) {
 						if (_socket->clients[i].id != client.id) { // send to all clients except new one
@@ -116,12 +116,11 @@ void cgl_UpdateSocket(Socket* _socket)
 				_cgl_clientdata packet;
 				memcpy(&packet, data, sizeof(_cgl_clientdata));
 				_socket->localID = packet.id;
-				printf("CLI: local id: %d\n", packet.id);
+				// printf("CLI: local id: %d\n", packet.id);
 			} break;
 			case CGL_CLIENTDATA: {
 				_cgl_clientdata packet;
 				memcpy(&packet, data, sizeof(_cgl_clientdata));
-				printf("CLI: got new client with id %d\n", packet.id);
 				
 				Client client;
 				client.id = packet.id;
@@ -153,7 +152,7 @@ void cgl_SendSocket(Socket* _socket, void* data, unsigned int size)
 	
 	int *fuck = (int*)malloc(sizeof(int));
 	fuck = (int*)5;
-	printf("%d  %d  %d  %d %d\n", size, sizeof(buffer), sizeof(data), strlen(buffer), fuck);
+	// printf("%d  %d  %d  %d %d\n", size, sizeof(buffer), sizeof(data), strlen(buffer), fuck);
 	
 	_socket->packet->len = sizeof(buffer);
 	_socket->packet->data = (Uint8*)malloc(sizeof(buffer));

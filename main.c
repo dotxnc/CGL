@@ -1,4 +1,5 @@
 
+#include <pthread.h>
 #include "window.h"
 #include "triangle.h"
 #include "shader.h"
@@ -19,6 +20,11 @@ Image* img_array;
 Socket server;
 Socket client;
 
+pthread_t server_thread;
+pthread_t client_thread;
+void* update_server(void* data) { while (true) cgl_UpdateSocket(&server); }
+void* update_client(void* data) { while (true) cgl_UpdateSocket(&client); }
+
 // this is a test
 
 void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
@@ -34,8 +40,10 @@ void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 	}
 	if (action == GLFW_PRESS && key == GLFW_KEY_F2 && server.socket==NULL) {
 		cgl_InitSocket(&server, "127.0.0.1", 27015, CGL_SERVER);
+		pthread_create(&server_thread, NULL, update_server, 0);
 	} else if (action == GLFW_PRESS && key == GLFW_KEY_F3 && client.socket==NULL) {
 		cgl_InitSocket(&client, "100.13.10.220", 27015, CGL_CLIENT);
+		pthread_create(&client_thread, NULL, update_client, 0);
 	}
 }
 
@@ -52,6 +60,7 @@ typedef struct {
 	int id;
 	// vec3 pos;
 	float x,y,z;
+	float rx,ry,rz;
 } PlayerPos;
 
 unsigned int server_recv(Socket* _socket, UDPpacket* packet)
@@ -65,7 +74,7 @@ unsigned int server_recv(Socket* _socket, UDPpacket* packet)
 	case PLAYER_POS: {
 		PlayerPos ppos;
 		memcpy(&ppos, data, sizeof(PlayerPos));
-		printf("server clients: %d, %d, %0.2f : %0.2f : %0.2f\n", _socket->numclients, ppos.x, ppos.y, ppos.z);
+		// printf("server clients: %d, %d, %0.2f : %0.2f : %0.2f\n", _socket->numclients, ppos.x, ppos.y, ppos.z);
 		
 		for (int i = 0; i < _socket->numclients; i++) {
 			cgl_SendToClientSocket(_socket, _socket->clients[i].addr, &ppos, sizeof(PlayerPos));
@@ -93,6 +102,11 @@ unsigned int client_recv(Socket* _socket, UDPpacket* packet)
 			img_array[ppos.id].x = ppos.x;
 			img_array[ppos.id].y = ppos.y;
 			img_array[ppos.id].z = ppos.z;
+			
+			img_array[ppos.id].rx = ppos.rx;
+			img_array[ppos.id].ry = ppos.ry;
+			img_array[ppos.id].rz = 0;//ppos.rz;
+			
 		}
 	} break;
 	default:
@@ -107,7 +121,7 @@ int main(int argc, char** argv)
 	pitch = yaw = roll = 0;
 
 	GameWindow window;
-	int success = cgl_InitGameWindow(&window, "OPENGL BITCHES", 1280, 720, false);
+	int success = cgl_InitGameWindow(&window, "OPENGL BITCHES", 800, 600, false);
 	if (success != 0) {
 		return -1;
 	}
@@ -250,6 +264,12 @@ int main(int argc, char** argv)
 			newpos[2] *= 5.0 * deltaTime;
 			vec3_add(cam.pos, cam.pos, newpos);
 		}
+		if (keys[GLFW_KEY_SPACE]) {
+			cam.pos[1] += 5.0*deltaTime;
+		}
+		if (keys[GLFW_KEY_LEFT_CONTROL]) {
+			cam.pos[1] -= 5.0*deltaTime;
+		}
 
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -324,12 +344,12 @@ int main(int argc, char** argv)
 		// update buffers
 		glfwSwapBuffers(window.window);
 		
-		cgl_UpdateSocket(&server);
-		cgl_UpdateSocket(&client);
+		// cgl_UpdateSocket(&server);
+		// cgl_UpdateSocket(&client);
 			
-		net_update += deltaTime;
-		if (net_update >= 1.f/30.f) // 30 tick valvo plz
-		{
+		// net_update += deltaTime;
+		// if (net_update >= 1.f/30.f) // 30 tick valvo plz
+		// {
 			if (client.localID>0)
 			{
 				send_iteration++;
@@ -339,10 +359,13 @@ int main(int argc, char** argv)
 				ppos.x = cam.pos[0];
 				ppos.y = cam.pos[1];
 				ppos.z = cam.pos[2];
+				ppos.rx = pitch;
+				ppos.ry = yaw;
+				ppos.rz = roll;
 				cgl_SendSocket(&client, &ppos, sizeof(PlayerPos));
 			}
-			net_update = 0;
-		}
+		// 	net_update = 0;
+		// }
 
 		float currentTime = glfwGetTime();
 		deltaTime = currentTime - lastTime;

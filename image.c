@@ -98,7 +98,7 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	mat4x4 model;
 	mat4x4_identity(model);
 	mat4x4_translate(model, image->x, image->y, image->z);
-	mat4x4_rotate(model, model, 1.0, image->scale, 0.5, glfwGetTime()*image->scale);
+	// mat4x4_rotate(model, model, 1.0, image->scale, 0.5, glfwGetTime()*image->scale);
 	// mat4x4_scale_aniso(model, model, image->scale, image->scale, image->scale);
 	mat4x4 view;
 	mat4x4_identity(view);

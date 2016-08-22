@@ -35,7 +35,7 @@ void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 	if (action == GLFW_PRESS && key == GLFW_KEY_F2 && server.socket==NULL) {
 		cgl_InitSocket(&server, "127.0.0.1", 27015, CGL_SERVER);
 	} else if (action == GLFW_PRESS && key == GLFW_KEY_F3 && client.socket==NULL) {
-		cgl_InitSocket(&client, "192.168.1.101", 27015, CGL_CLIENT);
+		cgl_InitSocket(&client, "100.13.10.220", 27015, CGL_CLIENT);
 	}
 }
 
@@ -50,7 +50,8 @@ enum { PLAYER_POS };
 typedef struct {
 	int type;
 	int id;
-	vec3 pos;
+	// vec3 pos;
+	float x,y,z;
 } PlayerPos;
 
 unsigned int server_recv(Socket* _socket, UDPpacket* packet)
@@ -62,15 +63,17 @@ unsigned int server_recv(Socket* _socket, UDPpacket* packet)
 	switch (type)
 	{
 	case PLAYER_POS: {
-		// PlayerPos ppos;
-		// memcpy(&ppos, data, sizeof(PlayerPos));
-		// for (int i = 0; i > _socket->numclients; i++) {
-		// 	cgl_SendToClientSocket(_socket, packet->address, &ppos, sizeof(PlayerPos));
-		// 	img_array[ppos.id].x = ppos.x;
-		// 	img_array[ppos.id].y = ppos.y;
-		// 	img_array[ppos.id].z = ppos.z;
-		// }
-		// 
+		PlayerPos ppos;
+		memcpy(&ppos, data, sizeof(PlayerPos));
+		printf("server clients: %d, %d, %0.2f : %0.2f : %0.2f\n", _socket->numclients, ppos.x, ppos.y, ppos.z);
+		
+		cgl_SendToClientSocket(_socket, packet->address, &ppos, sizeof(PlayerPos));
+		if (ppos.id != client.localID) {
+			img_array[ppos.id].x = ppos.x;
+			img_array[ppos.id].y = ppos.y;
+			img_array[ppos.id].z = ppos.z;
+		}
+		
 	} break;
 	default:
 		break;
@@ -80,7 +83,7 @@ unsigned int server_recv(Socket* _socket, UDPpacket* packet)
 
 unsigned int client_recv(Socket* _socket, UDPpacket* packet)
 {
-	printf("received packet client\n");
+	// printf("received packet client\n");
 }
 
 int main(int argc, char** argv)
@@ -320,9 +323,12 @@ int main(int argc, char** argv)
 				PlayerPos ppos;
 				ppos.type = PLAYER_POS;
 				ppos.id = client.localID;
-				memcpy(ppos.pos, cam.pos, sizeof(vec3));
+				ppos.x = cam.pos[0];
+				ppos.y = cam.pos[1];
+				ppos.z = cam.pos[2];
+				// memcpy(ppos.pos, cam.pos, sizeof(vec3));
 				// ppos.pos[1] = 0.1f;
-				printf("send iteration %d %d %d ::: ", send_iteration, sizeof(ppos), sizeof(PlayerPos));
+				// printf("send iteration %d %d %d ::: ", send_iteration, sizeof(ppos), sizeof(PlayerPos));
 				cgl_SendSocket(&client, &ppos, sizeof(PlayerPos));
 			}
 			

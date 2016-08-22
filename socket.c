@@ -138,7 +138,7 @@ void cgl_UpdateSocket(Socket* _socket)
 				break;
 			}
 			
-			printf("CLI: received data\n");
+			// printf("CLI: received data\n");
 			if (_socket->callback_recv!=NULL)
 				_socket->callback_recv(_socket, _socket->packet);
 		}
@@ -147,13 +147,16 @@ void cgl_UpdateSocket(Socket* _socket)
 
 void cgl_SendSocket(Socket* _socket, void* data, unsigned int size)
 {
-	BYTE* buffer = (BYTE*)malloc(size);
+	// BYTE* buffer = (BYTE*)malloc(size);
+	BYTE buffer[size];
 	memcpy(buffer, data, size);
 	
-	printf("%d  %d\n", size, sizeof(buffer));
-	// UDPpacket tosend;
+	int *fuck = (int*)malloc(sizeof(int));
+	fuck = (int*)5;
+	printf("%d  %d  %d  %d %d\n", size, sizeof(buffer), sizeof(data), strlen(buffer), fuck);
+	
 	_socket->packet->len = sizeof(buffer);
-	_socket->packet->data = (Uint8*)malloc(sizeof(buffer));
+	// _socket->packet->data = (Uint8*)malloc(sizeof(buffer));
 	_socket->packet->address.host = _socket->address.host;
 	_socket->packet->address.port = _socket->address.port;
 	memcpy(_socket->packet->data, data, sizeof(buffer));
@@ -164,17 +167,17 @@ void cgl_SendSocket(Socket* _socket, void* data, unsigned int size)
 
 void cgl_SendToClientSocket(Socket* _socket, IPaddress to, void* data, unsigned int size)
 {
-	printf("CGL: sending packeting with size of %d\n", size);
+	// printf("CGL: sending packeting with size of %d\n", size);
 	BYTE* buffer = (BYTE*)malloc(size);
 	memcpy(buffer, data, size);
 	// strcat((char)1, buffer);
 	
 	UDPpacket tosend;
-	tosend.len = size;
+	tosend.len = sizeof(buffer);
 	tosend.data = (Uint8*)malloc(sizeof(buffer));
 	tosend.address.host = to.host;
 	tosend.address.port = to.port;
-	memcpy(tosend.data, data, size);
+	memcpy(tosend.data, buffer, sizeof(buffer));
 	
 	SDLNet_UDP_Send(_socket->socket, -1, &tosend);
 }

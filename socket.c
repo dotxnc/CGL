@@ -150,12 +150,13 @@ void cgl_SendSocket(Socket* _socket, void* data, unsigned int size)
 	BYTE* buffer = (BYTE*)malloc(size);
 	memcpy(buffer, data, size);
 	
+	printf("%d  %d\n", size, sizeof(buffer));
 	// UDPpacket tosend;
-	_socket->packet->len = size;
+	_socket->packet->len = sizeof(buffer);
 	_socket->packet->data = (Uint8*)malloc(sizeof(buffer));
 	_socket->packet->address.host = _socket->address.host;
 	_socket->packet->address.port = _socket->address.port;
-	memcpy(_socket->packet->data, data, size);
+	memcpy(_socket->packet->data, data, sizeof(buffer));
 	
 	SDLNet_UDP_Send(_socket->socket, -1, _socket->packet);
 	

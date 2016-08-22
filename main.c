@@ -267,10 +267,14 @@ int main(int argc, char** argv)
 		else
 			sprintf(debug_client_clients, "Clients Client Side: %d", 0);
 		
-		vec3 npos;
-		memcpy(npos, cam.pos, sizeof(vec3));
-		char debug_position[512] = {0};
-		sprintf(debug_position, "X:%0.2f Y:%0.2f Z:%0.2f", npos[0], npos[1], npos[2]);
+		// PlayerPos ppos;
+		// ppos.type = PLAYER_POS;
+		// ppos.id = 1;
+		// memcpy(ppos.pos, cam.pos, sizeof(vec3));
+		// char debug_position[512] = {0};
+		// sprintf(debug_position, "X:%0.2f Y:%0.2f Z:%0.2f S:%d", ppos.pos[0], ppos.pos[1], ppos.pos[2], sizeof(ppos));
+		// if (client.socket != NULL)
+		// 	cgl_SendSocket(&client, &ppos, sizeof(ppos));
 
 		vec3 textcolor;
 		textcolor[0] = 0.7f;
@@ -298,13 +302,13 @@ int main(int argc, char** argv)
 		cgl_DrawText(&font, &text, "F3 = Start Client", 10, window.height-65, 0.3f, textcolor);
 		
 		// other
-		cgl_DrawText(&font, &text, debug_position, 10, window.height-100, 0.3f, textcolor);
+		// cgl_DrawText(&font, &text, debug_position, 10, window.height-100, 0.3f, textcolor);
 
 		// update buffers
 		glfwSwapBuffers(window.window);
 		
 		net_update += deltaTime;
-		if (net_update >= 0)
+		if (net_update >= 1.f/30.f) // 30 tick valvo plz
 		{
 		
 			cgl_UpdateSocket(&server);
@@ -313,16 +317,13 @@ int main(int argc, char** argv)
 			if (client.localID>0)
 			{
 				send_iteration++;
-				printf("send iteration %d\n", send_iteration);
-				// _cgl_debug();
 				PlayerPos ppos;
 				ppos.type = PLAYER_POS;
 				ppos.id = client.localID;
 				memcpy(ppos.pos, cam.pos, sizeof(vec3));
 				// ppos.pos[1] = 0.1f;
-				// _cgl_debug();
+				printf("send iteration %d %d %d ::: ", send_iteration, sizeof(ppos), sizeof(PlayerPos));
 				cgl_SendSocket(&client, &ppos, sizeof(PlayerPos));
-				// _cgl_debug();
 			}
 			
 			net_update = 0;

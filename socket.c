@@ -156,7 +156,7 @@ void cgl_SendSocket(Socket* _socket, void* data, unsigned int size)
 	printf("%d  %d  %d  %d %d\n", size, sizeof(buffer), sizeof(data), strlen(buffer), fuck);
 	
 	_socket->packet->len = sizeof(buffer);
-	// _socket->packet->data = (Uint8*)malloc(sizeof(buffer));
+	_socket->packet->data = (Uint8*)malloc(sizeof(buffer));
 	_socket->packet->address.host = _socket->address.host;
 	_socket->packet->address.port = _socket->address.port;
 	memcpy(_socket->packet->data, data, sizeof(buffer));
@@ -168,7 +168,8 @@ void cgl_SendSocket(Socket* _socket, void* data, unsigned int size)
 void cgl_SendToClientSocket(Socket* _socket, IPaddress to, void* data, unsigned int size)
 {
 	// printf("CGL: sending packeting with size of %d\n", size);
-	BYTE* buffer = (BYTE*)malloc(size);
+	// BYTE* buffer = (BYTE*)malloc(size);
+	BYTE buffer[size];
 	memcpy(buffer, data, size);
 	// strcat((char)1, buffer);
 	

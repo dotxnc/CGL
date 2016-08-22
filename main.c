@@ -13,7 +13,7 @@ float pitch,yaw,roll;
 bool firstMouse = true;
 float lastx = 400, lasty = 300;
 bool capturemouse = false;
-bool interval = true;
+bool interval = false;
 Image* img_array;
 
 Socket server;
@@ -67,13 +67,9 @@ unsigned int server_recv(Socket* _socket, UDPpacket* packet)
 		memcpy(&ppos, data, sizeof(PlayerPos));
 		printf("server clients: %d, %d, %0.2f : %0.2f : %0.2f\n", _socket->numclients, ppos.x, ppos.y, ppos.z);
 		
-		cgl_SendToClientSocket(_socket, packet->address, &ppos, sizeof(PlayerPos));
-		if (ppos.id != client.localID) {
-			img_array[ppos.id].x = ppos.x;
-			img_array[ppos.id].y = ppos.y;
-			img_array[ppos.id].z = ppos.z;
+		for (int i = 0; i < _socket->numclients; i++) {
+			cgl_SendToClientSocket(_socket, _socket->clients[i].addr, &ppos, sizeof(PlayerPos));
 		}
-		
 	} break;
 	default:
 		break;
@@ -84,6 +80,24 @@ unsigned int server_recv(Socket* _socket, UDPpacket* packet)
 unsigned int client_recv(Socket* _socket, UDPpacket* packet)
 {
 	// printf("received packet client\n");
+	char* data = (char*)malloc(packet->len);
+	memcpy(data, packet->data, packet->len);
+	int type = abs((int)data[0]);
+	
+	switch (type)
+	{
+	case PLAYER_POS: {
+		PlayerPos ppos;
+		memcpy(&ppos, data, sizeof(PlayerPos));
+		if (ppos.id != client.localID) {
+			img_array[ppos.id].x = ppos.x;
+			img_array[ppos.id].y = ppos.y;
+			img_array[ppos.id].z = ppos.z;
+		}
+	} break;
+	default:
+		break;
+	}
 }
 
 int main(int argc, char** argv)
@@ -310,13 +324,12 @@ int main(int argc, char** argv)
 		// update buffers
 		glfwSwapBuffers(window.window);
 		
+		cgl_UpdateSocket(&server);
+		cgl_UpdateSocket(&client);
+			
 		net_update += deltaTime;
 		if (net_update >= 1.f/30.f) // 30 tick valvo plz
 		{
-		
-			cgl_UpdateSocket(&server);
-			cgl_UpdateSocket(&client);
-			
 			if (client.localID>0)
 			{
 				send_iteration++;
@@ -326,12 +339,8 @@ int main(int argc, char** argv)
 				ppos.x = cam.pos[0];
 				ppos.y = cam.pos[1];
 				ppos.z = cam.pos[2];
-				// memcpy(ppos.pos, cam.pos, sizeof(vec3));
-				// ppos.pos[1] = 0.1f;
-				// printf("send iteration %d %d %d ::: ", send_iteration, sizeof(ppos), sizeof(PlayerPos));
 				cgl_SendSocket(&client, &ppos, sizeof(PlayerPos));
 			}
-			
 			net_update = 0;
 		}
 

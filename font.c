@@ -58,7 +58,6 @@ void cgl_InitFont(Font* font, const char* path)
 	FT_Done_Face(face);
 	FT_Done_FreeType(ft);
 	
-	// TODO: Generate vertex arrays
 	glGenVertexArrays(1, &font->VAO);
 	glGenBuffers(1, &font->VBO);
 	

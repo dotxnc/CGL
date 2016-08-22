@@ -25,8 +25,6 @@ pthread_t client_thread;
 void* update_server(void* data) { while (true) cgl_UpdateSocket(&server); }
 void* update_client(void* data) { while (true) cgl_UpdateSocket(&client); }
 
-// this is a test
-
 void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 {
 	if (action == GLFW_PRESS)
@@ -167,9 +165,7 @@ int main(int argc, char** argv)
 	cgl_InitImage(&img_array[8], "", 1.5f,  0.2f, -1.5f);
 	cgl_InitImage(&img_array[9], "", -1.3f,  1.0f, -1.5f);
 	
-	// cgl_InitSocket(&server, "127.0.0.1", 27015, CGL_SERVER);
 	
-	// cgl_InitSocket(&client, "192.168.1.101", 27015, CGL_CLIENT);
 	cgl_SetCallbackSocket(&server, server_recv, NULL, NULL);
 	cgl_SetCallbackSocket(&client, client_recv, NULL, NULL);
 	
@@ -181,7 +177,6 @@ int main(int argc, char** argv)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	while (!cgl_WindowShouldClose(&window))
 	{
-		// cgl_SendSocket(&client, &t2);
 		
 		glfwSwapInterval((int)interval);
 		
@@ -304,15 +299,7 @@ int main(int argc, char** argv)
 		else
 			sprintf(debug_client_clients, "Clients Client Side: %d", 0);
 		
-		// PlayerPos ppos;
-		// ppos.type = PLAYER_POS;
-		// ppos.id = 1;
-		// memcpy(ppos.pos, cam.pos, sizeof(vec3));
-		// char debug_position[512] = {0};
-		// sprintf(debug_position, "X:%0.2f Y:%0.2f Z:%0.2f S:%d", ppos.pos[0], ppos.pos[1], ppos.pos[2], sizeof(ppos));
-		// if (client.socket != NULL)
-		// 	cgl_SendSocket(&client, &ppos, sizeof(ppos));
-
+		
 		vec3 textcolor;
 		textcolor[0] = 0.7f;
 		textcolor[1] = 0.7f;
@@ -338,34 +325,23 @@ int main(int argc, char** argv)
 		cgl_DrawText(&font, &text, "F2 = Start Server", 10, window.height-50, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, "F3 = Start Client", 10, window.height-65, 0.3f, textcolor);
 		
-		// other
-		// cgl_DrawText(&font, &text, debug_position, 10, window.height-100, 0.3f, textcolor);
-
-		// update buffers
 		glfwSwapBuffers(window.window);
 		
-		// cgl_UpdateSocket(&server);
-		// cgl_UpdateSocket(&client);
-			
-		// net_update += deltaTime;
-		// if (net_update >= 1.f/30.f) // 30 tick valvo plz
-		// {
-			if (client.localID>0)
-			{
-				send_iteration++;
-				PlayerPos ppos;
-				ppos.type = PLAYER_POS;
-				ppos.id = client.localID;
-				ppos.x = cam.pos[0];
-				ppos.y = cam.pos[1];
-				ppos.z = cam.pos[2];
-				ppos.rx = pitch;
-				ppos.ry = yaw;
-				ppos.rz = roll;
-				cgl_SendSocket(&client, &ppos, sizeof(PlayerPos));
-			}
-		// 	net_update = 0;
-		// }
+		
+		if (client.localID>0)
+		{
+			send_iteration++;
+			PlayerPos ppos;
+			ppos.type = PLAYER_POS;
+			ppos.id = client.localID;
+			ppos.x = cam.pos[0];
+			ppos.y = cam.pos[1];
+			ppos.z = cam.pos[2];
+			ppos.rx = pitch;
+			ppos.ry = yaw;
+			ppos.rz = roll;
+			cgl_SendSocket(&client, &ppos, sizeof(PlayerPos));
+		}
 
 		float currentTime = glfwGetTime();
 		deltaTime = currentTime - lastTime;

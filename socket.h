@@ -9,13 +9,17 @@
 #define WITHOUT_SDL
 #include <SDL2/SDL_net.h>
 
+#define BYTE unsigned char
+
 #define _cgl_debug() printf("DEBUG ON LINE %d\n", __LINE__)
 
 static bool init_sdl_net=true;
 
-typedef unsigned int (*socket_recv)(UDPpacket*);
-typedef unsigned int (*socket_conn)(int);
-typedef unsigned int (*socket_dconn)(int);
+typedef struct Socket Socket;
+
+typedef unsigned int (*socket_recv)(Socket*, UDPpacket*);
+typedef unsigned int (*socket_conn)(Socket*, int);
+typedef unsigned int (*socket_dconn)(Socket*, int);
 
 typedef enum
 {
@@ -37,9 +41,9 @@ typedef enum {
 typedef struct {
 	int        id;
 	IPaddress  addr;
-}Client;
+} Client;
 
-typedef struct {
+typedef struct Socket {
 	CGL_SOCKET_TYPE  type;
 	UDPsocket        socket;
 	UDPpacket*       packet;
@@ -57,10 +61,11 @@ void cgl_InitSocket(Socket*, const char*, int, CGL_SOCKET_TYPE);
 void cgl_UpdateSocket(Socket*);
 void cgl_SendSocket(Socket*, void*, unsigned int size);
 void cgl_SetCallbackSocket(Socket*, const void*, const void*, const void*);
+Client cgl_GetClientSocket(Socket*, int);
+void cgl_SendToClientSocket(Socket*, IPaddress, void*, unsigned int);
 
 // private cgl network functions
 static void _cgl_getclient(Socket*, IPaddress);
-static void _cgl_sendtoclient(Socket*, IPaddress, void*, unsigned int);
 static Client _cgl_getclientid(Socket*, int);
 
 #endif

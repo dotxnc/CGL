@@ -14,6 +14,7 @@ bool firstMouse = true;
 float lastx = 400, lasty = 300;
 bool capturemouse = false;
 bool interval = true;
+Image* img_array;
 
 Socket server;
 Socket client;
@@ -40,6 +41,46 @@ void key_callback(GLFWwindow* window, int key, int scan, int action, int mode)
 
 float radians(float r) {
 	return r * (M_PI/ 180.0 );
+}
+
+
+// Server/Client callbacks
+
+enum { PLAYER_POS };
+typedef struct {
+	int type;
+	int id;
+	vec3 pos;
+} PlayerPos;
+
+unsigned int server_recv(Socket* _socket, UDPpacket* packet)
+{
+	char* data = (char*)malloc(packet->len);
+	memcpy(data, packet->data, packet->len);
+	int type = abs((int)data[0]);
+	
+	switch (type)
+	{
+	case PLAYER_POS: {
+		// PlayerPos ppos;
+		// memcpy(&ppos, data, sizeof(PlayerPos));
+		// for (int i = 0; i > _socket->numclients; i++) {
+		// 	cgl_SendToClientSocket(_socket, packet->address, &ppos, sizeof(PlayerPos));
+		// 	img_array[ppos.id].x = ppos.x;
+		// 	img_array[ppos.id].y = ppos.y;
+		// 	img_array[ppos.id].z = ppos.z;
+		// }
+		// 
+	} break;
+	default:
+		break;
+	}
+	
+}
+
+unsigned int client_recv(Socket* _socket, UDPpacket* packet)
+{
+	printf("received packet client\n");
 }
 
 int main(int argc, char** argv)
@@ -83,7 +124,6 @@ int main(int argc, char** argv)
 	Image img;
 	cgl_InitImage(&img, "", 0.0, 0.0, 1.0);
 
-	Image* img_array;
 	img_array = (Image*)malloc(10*sizeof(Image));
 	cgl_InitImage(&img_array[0], "", 0.0f,  0.0f,  0.0f);
 	cgl_InitImage(&img_array[1], "", 2.0f,  5.0f, -15.0f);
@@ -99,6 +139,11 @@ int main(int argc, char** argv)
 	// cgl_InitSocket(&server, "127.0.0.1", 27015, CGL_SERVER);
 	
 	// cgl_InitSocket(&client, "192.168.1.101", 27015, CGL_CLIENT);
+	cgl_SetCallbackSocket(&server, server_recv, NULL, NULL);
+	cgl_SetCallbackSocket(&client, client_recv, NULL, NULL);
+	
+	float net_update = 0;
+	int send_iteration = 0;
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -108,6 +153,7 @@ int main(int argc, char** argv)
 		// cgl_SendSocket(&client, &t2);
 		
 		glfwSwapInterval((int)interval);
+		
 
 		int w,h;
 		glfwGetWindowSize(window.window, &w, &h);
@@ -220,6 +266,11 @@ int main(int argc, char** argv)
 			sprintf(debug_client_clients, "Clients Client Side: %d", client.numclients);
 		else
 			sprintf(debug_client_clients, "Clients Client Side: %d", 0);
+		
+		vec3 npos;
+		memcpy(npos, cam.pos, sizeof(vec3));
+		char debug_position[512] = {0};
+		sprintf(debug_position, "X:%0.2f Y:%0.2f Z:%0.2f", npos[0], npos[1], npos[2]);
 
 		vec3 textcolor;
 		textcolor[0] = 0.7f;
@@ -245,12 +296,37 @@ int main(int argc, char** argv)
 		cgl_DrawText(&font, &text, "Tab = Toggle Mouse Capture", 10, window.height-35, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, "F2 = Start Server", 10, window.height-50, 0.3f, textcolor);
 		cgl_DrawText(&font, &text, "F3 = Start Client", 10, window.height-65, 0.3f, textcolor);
+		
+		// other
+		cgl_DrawText(&font, &text, debug_position, 10, window.height-100, 0.3f, textcolor);
 
 		// update buffers
 		glfwSwapBuffers(window.window);
 		
-		cgl_UpdateSocket(&server);
-		cgl_UpdateSocket(&client);
+		net_update += deltaTime;
+		if (net_update >= 0)
+		{
+		
+			cgl_UpdateSocket(&server);
+			cgl_UpdateSocket(&client);
+			
+			if (client.localID>0)
+			{
+				send_iteration++;
+				printf("send iteration %d\n", send_iteration);
+				// _cgl_debug();
+				PlayerPos ppos;
+				ppos.type = PLAYER_POS;
+				ppos.id = client.localID;
+				memcpy(ppos.pos, cam.pos, sizeof(vec3));
+				// ppos.pos[1] = 0.1f;
+				// _cgl_debug();
+				cgl_SendSocket(&client, &ppos, sizeof(PlayerPos));
+				// _cgl_debug();
+			}
+			
+			net_update = 0;
+		}
 
 		float currentTime = glfwGetTime();
 		deltaTime = currentTime - lastTime;

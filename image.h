@@ -23,11 +23,12 @@ typedef struct {
 	GLuint normalMap;
 
 	float x,y,z;
+	float w,h,d;
 	float rx,ry,rz;
 	float scale;
 } Image;
 
-void cgl_InitImage(Image*, const char*, float, float, float);
+void cgl_InitImage(Image*, const char*, float, float, float, float, float, float);
 void cgl_DrawImage(Image*, ShaderProgram*, Camera*);
 
 #endif

@@ -1,7 +1,7 @@
 
 #include "image.h"
 
-void cgl_InitImage(Image* image, const char* path, float x, float y, float z)
+void cgl_InitImage(Image* image, const char* path, float x, float y, float z, float w, float h, float d)
 {
 	GLfloat vertices[] = {
 		// Positions          // Normals           // Texture Coords
@@ -56,6 +56,10 @@ void cgl_InitImage(Image* image, const char* path, float x, float y, float z)
 	image->x = x;
 	image->y = y;
 	image->z = z;
+	image->w = w;
+	image->h = h;
+	image->d = d;
+	
 	
 	image->rx = ((float)rand() / (float)RAND_MAX)*180;
 	image->ry = ((float)rand() / (float)RAND_MAX)*180;
@@ -79,7 +83,7 @@ void cgl_InitImage(Image* image, const char* path, float x, float y, float z)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	image->image = SOIL_load_image("data/container.jpg", &image->width, &image->height, 0, SOIL_LOAD_RGB);
+	image->image = SOIL_load_image("data/metal.jpg", &image->width, &image->height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image->image);
@@ -91,7 +95,7 @@ void cgl_InitImage(Image* image, const char* path, float x, float y, float z)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-	image->image = SOIL_load_image("data/SpecularMap.png", &image->width, &image->height, 0, SOIL_LOAD_RGB);
+	image->image = SOIL_load_image("data/meta_specular.png", &image->width, &image->height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -111,6 +115,7 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	mat4x4_rotate(model, model, 1.0, 0.0, 0.0, -image->rx * (M_PI/ 180.0 ));
 	mat4x4_rotate(model, model, 0.0, 1.0, 0.0, -image->ry * (M_PI/ 180.0 ));
 	mat4x4_rotate(model, model, 0.0, 0.0, 1.0, -image->rz * (M_PI/ 180.0 ));
+	mat4x4_scale_aniso(model, model, image->w, image->h, image->d);
 	mat4x4 view;
 	mat4x4_identity(view);
 	vec3 front;
@@ -127,11 +132,8 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	GLint projLoc = glGetUniformLocation(prog->program, "projection");
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, (*projection));
 	
-	glUniform3f(glGetUniformLocation(prog->program, "light.position"), sin(glfwGetTime())*5, 0, -5+cos(glfwGetTime())*10);
+	// glUniform3f(glGetUniformLocation(prog->program, "light.position"), sin(glfwGetTime())*10, 0, -5+cos(glfwGetTime())*10);
 	glUniform3f(glGetUniformLocation(prog->program, "viewPos"), cam->pos[0], cam->pos[1], cam->pos[2]);
-	
-	glUniform3f(glGetUniformLocation(prog->program, "lightColor"), 1.0, 0.5, 0.31);
-	glUniform3f(glGetUniformLocation(prog->program, "objectColor"), 1.0, 1.0, 1.0);
 	
 	/// Material vars
 	GLint matShineLoc = glGetUniformLocation(prog->program, "material.shininess"); 
@@ -139,21 +141,7 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	glUniform1i(glGetUniformLocation(prog->program, "material.diffuse"),  0);
 	glUniform1i(glGetUniformLocation(prog->program, "material.specular"), 1);
 	
-	/// Light vars
-	glUniform1f(glGetUniformLocation(prog->program, "light.linear"), 1.0);
-	glUniform1f(glGetUniformLocation(prog->program, "light.constant"), 0.014);
-	glUniform1f(glGetUniformLocation(prog->program, "light.quadratic"), 0.0007);
-	glUniform3f(glGetUniformLocation(prog->program, "light.color"), 1.0, 0.2, 0.2);
-	
-	/// changing colors
-	glUniform3f(glGetUniformLocation(prog->program, "light.ambient"),  0.f, 0.f, 0.f);
-    glUniform3f(glGetUniformLocation(prog->program, "light.diffuse"),  0.5f, 0.5f, 0.5f);
-    glUniform3f(glGetUniformLocation(prog->program, "light.specular"), 1.0f, 1.f, 1.f);
-
-	// DRAWING
-	glUniform1i(glGetUniformLocation(prog->program, "material.diffuse"), 0);
-
-	
+	// Drawing
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, image->diffuseMap);
 	glActiveTexture(GL_TEXTURE1);

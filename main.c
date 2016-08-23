@@ -8,6 +8,7 @@
 #include "image.h"
 #include "font.h"
 #include "socket.h"
+#include "lights.h"
 
 bool keys[1024];
 float pitch,yaw,roll;
@@ -150,21 +151,35 @@ int main(int argc, char** argv)
 	Triangle tri;
 	cgl_InitTriangle(&tri, verts, sizeof(verts));
 
-	Image img;
-	cgl_InitImage(&img, "", 0.0, 0.0, 1.0);
+	// Image img;
+	// cgl_InitImage(&img, "", 0.0, 0.0, 1.0);
 
-	img_array = (Image*)malloc(10*sizeof(Image));
-	cgl_InitImage(&img_array[0], "", 0.0f,  0.0f,  0.0f);
-	cgl_InitImage(&img_array[1], "", 2.0f,  5.0f, -15.0f);
-	cgl_InitImage(&img_array[2], "", -1.5f, -2.2f, -2.5f);
-	cgl_InitImage(&img_array[3], "", -3.8f, -2.0f, -12.3f);
-	cgl_InitImage(&img_array[4], "", 2.4f, -0.4f, -3.5f);
-	cgl_InitImage(&img_array[5], "", -1.7f,  3.0f, -7.5f);
-	cgl_InitImage(&img_array[6], "", 1.3f, -2.0f, -2.5f);
-	cgl_InitImage(&img_array[7], "", 1.5f,  2.0f, -2.5f);
-	cgl_InitImage(&img_array[8], "", 1.5f,  0.2f, -1.5f);
-	cgl_InitImage(&img_array[9], "", -1.3f,  1.0f, -1.5f);
+	img_array = (Image*)malloc(11*sizeof(Image));
+	cgl_InitImage(&img_array[0], "", 0.0f,  0.0f,  0.0f, 1, 1, 1);
+	cgl_InitImage(&img_array[1], "", 2.0f,  5.0f, -15.0f, 1, 1, 1);
+	cgl_InitImage(&img_array[2], "", -1.5f, -2.2f, -2.5f, 1, 1, 1);
+	cgl_InitImage(&img_array[3], "", -3.8f, -2.0f, -12.3f, 1, 1, 1);
+	cgl_InitImage(&img_array[4], "", 2.4f, -0.4f, -3.5f, 1, 1, 1);
+	cgl_InitImage(&img_array[5], "", -1.7f,  3.0f, -7.5f, 1, 1, 1);
+	cgl_InitImage(&img_array[6], "", 1.3f, -2.0f, -2.5f, 1, 1, 1);
+	cgl_InitImage(&img_array[7], "", 1.5f,  2.0f, -2.5f, 1, 1, 1);
+	cgl_InitImage(&img_array[8], "", 1.5f,  0.2f, -1.5f, 1, 1, 1);
+	cgl_InitImage(&img_array[9], "", -1.3f,  1.0f, -1.5f, 1, 1, 1);
+	cgl_InitImage(&img_array[10], "", 0, -5, -10, 40, 0.1, 40);
 	
+	Image light;
+	cgl_InitImage(&light, "", 0, 0, 0, 0.5, 0.5, 0.5);
+	
+	cgl_InitLights(4);
+	vec3 lpos = {1, 1, 1};
+	vec3 lamb = {0.2, 0.2, 0.2};
+	vec3 ldif = {0.8, 0.8, 0.8};
+	vec3 lspe = {1, 1, 1};
+	int l1 = cgl_AddLight(&t_prog, lpos, lamb, ldif, lspe);
+	
+	img_array[10].rx = 0;
+	img_array[10].ry = 0;
+	img_array[10].rz = 0;
 	
 	cgl_SetCallbackSocket(&server, server_recv, NULL, NULL);
 	cgl_SetCallbackSocket(&client, client_recv, NULL, NULL);
@@ -177,6 +192,8 @@ int main(int argc, char** argv)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	while (!cgl_WindowShouldClose(&window))
 	{
+		light.x = sin(glfwGetTime())*10;
+		light.z = -5+cos(glfwGetTime())*10;
 		
 		glfwSwapInterval((int)interval);
 		
@@ -270,9 +287,10 @@ int main(int argc, char** argv)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.1, 0.1, 0.1, 1.0);
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 11; i++)
 			cgl_DrawImage(&img_array[i], &t_prog, &cam);
 		// cgl_DrawTriangle(&tri, &prog);
+		cgl_DrawImage(&light, &t_prog, &cam);
 
 		// Print debug data
 		char debug_delta[512] = {0};

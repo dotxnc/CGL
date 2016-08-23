@@ -17,7 +17,9 @@ typedef struct {
 
 	int width,height;
 	unsigned char* image;
-	GLuint texture;
+	
+	GLuint diffuseMap;
+	GLuint specularMap;
 
 	float x,y,z;
 	float rx,ry,rz;

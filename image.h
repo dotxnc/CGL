@@ -20,6 +20,7 @@ typedef struct {
 	
 	GLuint diffuseMap;
 	GLuint specularMap;
+	GLuint normalMap;
 
 	float x,y,z;
 	float rx,ry,rz;

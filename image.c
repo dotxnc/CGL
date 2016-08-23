@@ -57,9 +57,9 @@ void cgl_InitImage(Image* image, const char* path, float x, float y, float z)
 	image->y = y;
 	image->z = z;
 	
-	image->rx = 0;
-	image->ry = 0;
-	image->rz = 0;
+	image->rx = ((float)rand() / (float)RAND_MAX)*180;
+	image->ry = ((float)rand() / (float)RAND_MAX)*180;
+	image->rz = ((float)rand() / (float)RAND_MAX)*180;
 	image->scale = (float)rand() / (float)RAND_MAX;
 
 	glGenVertexArrays(1, &image->VAO);
@@ -146,9 +146,9 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	glUniform3f(glGetUniformLocation(prog->program, "light.color"), 1.0, 0.2, 0.2);
 	
 	/// changing colors
-	glUniform3f(glGetUniformLocation(prog->program, "light.ambient"),  0.8f, 0.2f, 0.2f);
+	glUniform3f(glGetUniformLocation(prog->program, "light.ambient"),  0.f, 0.f, 0.f);
     glUniform3f(glGetUniformLocation(prog->program, "light.diffuse"),  0.5f, 0.5f, 0.5f);
-    glUniform3f(glGetUniformLocation(prog->program, "light.specular"), 1.0f, 0.4f, 0.4f);
+    glUniform3f(glGetUniformLocation(prog->program, "light.specular"), 1.0f, 1.f, 1.f);
 
 	// DRAWING
 	glUniform1i(glGetUniformLocation(prog->program, "material.diffuse"), 0);

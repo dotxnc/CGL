@@ -15,7 +15,7 @@ int cgl_InitGameWindow(GameWindow* window, char* title, int width, int height, b
 	window->width = width;
 	window->height = height;
 
-	glfwSetInputMode(window->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(window->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	glfwMakeContextCurrent(window->window);
 
@@ -35,5 +35,5 @@ bool cgl_WindowShouldClose(GameWindow* window)
 
 void cgl_DestroyWindow(GameWindow* window)
 {
-	glfwDestroyWindow(window->window);
+	glfwSetWindowShouldClose(window->window, true);
 }

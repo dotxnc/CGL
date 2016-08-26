@@ -37,3 +37,10 @@ void cgl_DestroyWindow(GameWindow* window)
 {
 	glfwSetWindowShouldClose(window->window, true);
 }
+
+float cgl_GetWindowAspect(GameWindow* window)
+{
+	int w,h;
+	glfwGetWindowSize(window->window, &w, &h);
+	return (float)w/h;
+}

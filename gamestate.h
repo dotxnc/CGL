@@ -12,6 +12,7 @@ typedef struct {
 	init_funct init;
 	update_funct update;
 	render_funct render;
+	bool initialized;
 } GameState;
 
 void cgl_InitGameState(GameState*, const void*, const void*, const void*);

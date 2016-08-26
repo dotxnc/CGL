@@ -1,7 +1,7 @@
 
 #include "image.h"
 
-void cgl_InitImage(Image* image, const char* path, float x, float y, float z, float w, float h, float d)
+void cgl_InitImage(Image* image, const char* path, const char* spec, vec3 pos, vec3 size)
 {
 	GLfloat vertices[] = {
 		// Positions          // Normals           // Texture Coords
@@ -53,17 +53,20 @@ void cgl_InitImage(Image* image, const char* path, float x, float y, float z, fl
 		0.5, 1.0
 	};
 	
-	image->x = x;
-	image->y = y;
-	image->z = z;
-	image->w = w;
-	image->h = h;
-	image->d = d;
+	image->x = pos[0];
+	image->y = pos[1];
+	image->z = pos[2];
+	image->w = size[0];
+	image->h = size[1];
+	image->d = size[2];
 	
 	
-	image->rx = ((float)rand() / (float)RAND_MAX)*180;
-	image->ry = ((float)rand() / (float)RAND_MAX)*180;
-	image->rz = ((float)rand() / (float)RAND_MAX)*180;
+	// image->rx = ((float)rand() / (float)RAND_MAX)*180;
+	// image->ry = ((float)rand() / (float)RAND_MAX)*180;
+	// image->rz = ((float)rand() / (float)RAND_MAX)*180;
+	image->rx = 0;
+	image->ry = 0;
+	image->rz = 0;
 	image->scale = (float)rand() / (float)RAND_MAX;
 
 	glGenVertexArrays(1, &image->VAO);
@@ -75,7 +78,7 @@ void cgl_InitImage(Image* image, const char* path, float x, float y, float z, fl
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
-
+	
 	// load diffuse map
 	glGenTextures(1, &image->diffuseMap);
 	glBindTexture(GL_TEXTURE_2D, image->diffuseMap);
@@ -83,7 +86,7 @@ void cgl_InitImage(Image* image, const char* path, float x, float y, float z, fl
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	image->image = SOIL_load_image("data/metal.jpg", &image->width, &image->height, 0, SOIL_LOAD_RGB);
+	image->image = SOIL_load_image(path, &image->width, &image->height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image->image);

@@ -17,4 +17,9 @@ void cgl_InitGame(Game*, char*, int, int);
 void cgl_SetStateGame(Game*, GameState*);
 void cgl_StartGame(Game*);
 
+bool cgl_IsKeyDown(int);
+bool cgl_IsKeyPressed(int);
+
+static void _cgl_keypressed(GLFWwindow*, int, int, int, int);
+
 #endif

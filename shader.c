@@ -67,6 +67,8 @@ void cgl_InitShaderProgram(ShaderProgram* prog, char* vpath, char* fpath)
 
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);
+	
+	printf("Shader Compiled.. (%s) : (%s)\n", vpath, fpath);
 }
 
 void cgl_UseProgram(ShaderProgram* p)

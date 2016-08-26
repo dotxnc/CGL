@@ -6,4 +6,5 @@ void cgl_InitGameState(GameState* state, const void* init, const void* update, c
 	state->init = init;
 	state->update = update;
 	state->render = render;
+	state->initialized = false;
 }

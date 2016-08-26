@@ -18,4 +18,6 @@ int cgl_InitGameWindow(GameWindow*, char*, int, int, bool);
 bool cgl_WindowShouldClose(GameWindow*);
 void cgl_DestroyWindow(GameWindow*);
 
+float cgl_GetWindowAspect(GameWindow*);
+
 #endif

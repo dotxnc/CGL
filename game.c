@@ -1,5 +1,7 @@
 #include "game.h"
 
+static bool keys[1024];
+
 void cgl_InitGame(Game* game, char* title, int width, int height)
 {
 	cgl_InitGameWindow(&game->window, title, width, height, false);
@@ -8,12 +10,20 @@ void cgl_InitGame(Game* game, char* title, int width, int height)
 
 void cgl_SetStateGame(Game* game, GameState* state)
 {
+	if (!state->initialized) {
+		state->init();
+		state->initialized = true;
+	}
 	game->current_state = state;
 }
 
 void cgl_StartGame(Game* game)
 {
+	glfwSetKeyCallback(game->window.window, _cgl_keypressed);
+	
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	while (!cgl_WindowShouldClose(&game->window))
 	{
 		glfwSwapInterval((int)game->use_vsync);
@@ -30,5 +40,28 @@ void cgl_StartGame(Game* game)
 		glfwSwapBuffers(game->window.window);
 		glfwPollEvents();
 		
+	}
+}
+
+bool cgl_IsKeyDown(int key) {
+	if (key < 1024 && key >= 0) {
+		return keys[key];
+	}
+}
+
+bool cgl_IsKeyPressed(int key) {
+	if (cgl_IsKeyDown(key)) {
+		keys[key] = false;
+		return true;
+	}
+	return false;
+}
+
+void _cgl_keypressed(GLFWwindow* window, int key, int scan, int action, int mods)
+{
+	if (action == GLFW_PRESS) {
+		keys[key] = true;
+	} else if (action == GLFW_RELEASE) {
+		keys[key] = false;
 	}
 }

@@ -2,8 +2,13 @@
 
 void cgl_InitLights(int max_lights)
 {
-	lights = (PointLight*)malloc(max_lights);
+	lights = (PointLight*)malloc(max_lights*sizeof(PointLight));
 	_cgl_numlights = 0;
+}
+
+void cgl_DeleteLights()
+{
+	free(lights);
 }
 
 int cgl_AddLight(ShaderProgram* shader, vec3 pos, vec3 amb, vec3 dif, vec3 spec)
@@ -42,14 +47,14 @@ int cgl_AddLight(ShaderProgram* shader, vec3 pos, vec3 amb, vec3 dif, vec3 spec)
 	sprintf(diffuse,    "pointLights[%d].diffuse",    _cgl_numlights);
 	sprintf(specular,   "pointLights[%d].specular",   _cgl_numlights);
 	
-	glUniform1f(glGetUniformLocation(shader->program, linear), 1.0);
-	glUniform1f(glGetUniformLocation(shader->program, constant), 0.0014);
-	glUniform1f(glGetUniformLocation(shader->program, quadratic), 0.000007);
+	glUniform1f(glGetUniformLocation(shader->program, linear),     1.0);
+	glUniform1f(glGetUniformLocation(shader->program, constant),   0.0014);
+	glUniform1f(glGetUniformLocation(shader->program, quadratic),  0.000007);
 	
-	glUniform3f(glGetUniformLocation(shader->program, position), pos[0], pos[1], pos[2]);
-	glUniform3f(glGetUniformLocation(shader->program, diffuse), dif[0], dif[1], dif[2]);
-    glUniform3f(glGetUniformLocation(shader->program, ambient), amb[0], amb[1], amb[2]);
-    glUniform3f(glGetUniformLocation(shader->program, specular), spec[0], spec[1], spec[2]);
+	glUniform3f(glGetUniformLocation(shader->program, position),  pos[0],   pos[1],   pos[2]);
+	glUniform3f(glGetUniformLocation(shader->program, diffuse),   dif[0],   dif[1],   dif[2]);
+    glUniform3f(glGetUniformLocation(shader->program, ambient),   amb[0],   amb[1],   amb[2]);
+    glUniform3f(glGetUniformLocation(shader->program, specular),  spec[0],  spec[1],  spec[2]);
 	
 	_cgl_numlights++;
 	return _cgl_numlights-1;

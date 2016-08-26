@@ -19,6 +19,7 @@ PointLight* lights;
 int _cgl_numlights;
 
 void cgl_InitLights(int);
+void cgl_DeleteLights();
 int cgl_AddLight(ShaderProgram*, vec3, vec3, vec3, vec3); // returns index
 int cgl_DrawLight();
 

@@ -6,6 +6,7 @@ void cgl_InitGame(Game* game, char* title, int width, int height)
 {
 	cgl_InitGameWindow(&game->window, title, width, height, false);
 	game->use_vsync = true;
+	game->lasttime = glfwGetTime();
 }
 
 void cgl_SetStateGame(Game* game, GameState* state)
@@ -22,10 +23,11 @@ void cgl_StartGame(Game* game)
 	glfwSetKeyCallback(game->window.window, _cgl_keypressed);
 	
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	while (!cgl_WindowShouldClose(&game->window))
 	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
 		glfwSwapInterval((int)game->use_vsync);
 		
 		if (game->current_state != NULL)
@@ -39,6 +41,10 @@ void cgl_StartGame(Game* game)
 		
 		glfwSwapBuffers(game->window.window);
 		glfwPollEvents();
+		
+		float currenttime = glfwGetTime();
+		game->delta = currenttime - game->lasttime;
+		game->lasttime = currenttime;
 		
 	}
 }

@@ -42,6 +42,31 @@ void cgl_InitSprite(Sprite* sprite, const char* path)
 
 void cgl_DrawSprite(Sprite* sprite, ShaderProgram* shader, float x, float y)
 {
+	vec2 scale = {1, 1};
+	vec4 color = {1, 1, 1, 1};
+	_cgl_drawsprite(sprite, shader, x, y, scale, color);
+}
+
+void cgl_DrawSpriteScale(Sprite* sprite, ShaderProgram* shader, float x, float y, vec2 scale)
+{
+	vec4 color = {1, 1, 1, 1};
+	_cgl_drawsprite(sprite, shader, x, y, scale, color);
+}
+
+void cgl_DrawSpriteColor(Sprite* sprite, ShaderProgram* shader, float x, float y, vec4 color)
+{
+	vec2 scale = {1, 1};
+	_cgl_drawsprite(sprite, shader, x, y, scale, color);
+}
+
+void cgl_DrawSpriteScaleColor(Sprite* sprite, ShaderProgram* shader, float x, float y, vec2 scale, vec4 color)
+{
+	_cgl_drawsprite(sprite, shader, x, y, scale, color);
+}
+
+void _cgl_drawsprite(Sprite* sprite, ShaderProgram* shader, float x, float y, vec2 scale, vec4 color)
+{
+	glDepthMask(false);
 	cgl_UseProgram(shader);
 	
 	mat4x4 ortho;
@@ -49,18 +74,20 @@ void cgl_DrawSprite(Sprite* sprite, ShaderProgram* shader, float x, float y)
 	mat4x4_ortho(ortho, 0.0, _cgl_window_size[0], 0.0, _cgl_window_size[1], -1, 1);
 	glUniformMatrix4fv(glGetUniformLocation(shader->program, "projection"), 1, GL_FALSE, *ortho);
 	
+	glUniform4f(glGetUniformLocation(shader->program, "ucolor"), color[0], color[1], color[2], color[2]);
+	
 	// glUniform3f(glGetUniformLocation(shader->program, "textColor"), 1, 1, 1);
 	glActiveTexture(GL_TEXTURE0);
 	
 	glBindVertexArray(sprite->VAO);
 	
 	float vertices[6][4] = {
-		{ x,                 y + sprite->height,   0.0, 0.0 },            
+		{ x,                 y + sprite->height*scale[1],   0.0, 0.0 },            
 		{ x,                 y,                    0.0, 1.0 },
-		{ x + sprite->width, y,                    1.0, 1.0 },
-		{ x,                 y + sprite->height,   0.0, 0.0 },
-		{ x + sprite->width, y,                    1.0, 1.0 },
-		{ x + sprite->width, y + sprite->height,   1.0, 0.0 }
+		{ x + sprite->width*scale[0], y,                    1.0, 1.0 },
+		{ x,                 y + sprite->height*scale[1],   0.0, 0.0 },
+		{ x + sprite->width*scale[0], y,                    1.0, 1.0 },
+		{ x + sprite->width*scale[0], y + sprite->height*scale[1],   1.0, 0.0 }
 	};
 	
 	glBindTexture(GL_TEXTURE_2D, sprite->texture);
@@ -70,5 +97,6 @@ void cgl_DrawSprite(Sprite* sprite, ShaderProgram* shader, float x, float y)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glDepthMask(true);
 	
 }

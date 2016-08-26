@@ -10,6 +10,7 @@ typedef struct {
 	GameState* current_state;
 	bool use_vsync;
 	float delta;
+	float lasttime;
 	// TODO: framebuffers probably
 } Game;
 

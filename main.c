@@ -7,6 +7,8 @@
 #include "lights.h"
 #include "sprite.h"
 
+#include "states/splash.h"
+
 static ShaderProgram main_shader;
 static ShaderProgram text_shader;
 static ShaderProgram sprite_shader;
@@ -56,12 +58,13 @@ unsigned int render(GameWindow* w)
 {
 	cam.aspect = cgl_GetWindowAspect(w);
 	
-	cgl_DrawImage(&box3d, &main_shader, &cam);
+	// cgl_DrawImage(&box3d, &main_shader, &cam);
 	
 	vec3 tcolor = {1, 1, 1};
 	cgl_DrawText(&font, &text_shader, "FUCK", 10, 20, 0.3, tcolor);
 	
-	cgl_DrawSprite(&sprite, &sprite_shader, 0, 0);
+	vec2 scale = {0.5, 0.5};
+	cgl_DrawSpriteScale(&sprite, &sprite_shader, 0, 0, scale);
 	
 	return 0;
 }
@@ -73,9 +76,11 @@ int main(int argc, char** argv)
 	GameState test;
 	cgl_InitGameState(&test, init, update, render);
 	
+	cgl_InitGameState(&splash_state, splash_init, splash_update, splash_render);
+	
 	Game game;
 	cgl_InitGame(&game, "3D Game", 800, 600);
-	cgl_SetStateGame(&game, &test);
+	cgl_SetStateGame(&game, &splash_state);
 	cgl_StartGame(&game);
 	
 	cgl_DeleteLights();

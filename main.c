@@ -5,17 +5,21 @@
 #include "shader.h"
 #include "font.h"
 #include "lights.h"
+#include "sprite.h"
 
 static ShaderProgram main_shader;
 static ShaderProgram text_shader;
+static ShaderProgram sprite_shader;
 static Image box3d;
 static Camera cam;
 static Font font;
+static Sprite sprite;
 
 unsigned int init()
 {
 	cgl_InitShaderProgram(&main_shader, "data/texture_vert.glsl", "data/texture_frag.glsl");
 	cgl_InitShaderProgram(&text_shader, "data/text_vert.glsl", "data/text_frag.glsl");
+	cgl_InitShaderProgram(&sprite_shader, "data/sprite_vert.glsl", "data/sprite_frag.glsl");
 	
 	vec3 pos = {0, 0, 0};
 	vec3 size = {1, 1, 1};
@@ -24,6 +28,8 @@ unsigned int init()
 	
 	box3d.rx = -20;
 	box3d.ry = 20;
+	
+	cgl_InitSprite(&sprite, "data/logo.png");
 	
 	cgl_InitFont(&font, "data/font.ttf");
 	
@@ -52,8 +58,10 @@ unsigned int render(GameWindow* w)
 	
 	cgl_DrawImage(&box3d, &main_shader, &cam);
 	
-	vec3 tcolor = {0, 0, 0};
-	cgl_DrawText(&font, &text_shader, "FUCK", 10, -20, 0.3, tcolor);
+	vec3 tcolor = {1, 1, 1};
+	cgl_DrawText(&font, &text_shader, "FUCK", 10, 20, 0.3, tcolor);
+	
+	cgl_DrawSprite(&sprite, &sprite_shader, 0, 0);
 	
 	return 0;
 }

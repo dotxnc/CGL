@@ -2,6 +2,9 @@
 
 int cgl_InitGameWindow(GameWindow* window, char* title, int width, int height, bool resizable)
 {
+	_cgl_window_size[0] = width;
+	_cgl_window_size[1] = height;
+	
 	glfwInit();
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

@@ -39,7 +39,7 @@ void cgl_UpdateSocket(Socket* _socket)
 		{
 			BYTE* data = (BYTE*)malloc(_socket->packet->len);
 			memcpy(data, _socket->packet->data, _socket->packet->len);
-			int type = abs(data[0]);
+			int type = abs((int)data[0]);
 			
 			switch (type)
 			{
@@ -106,7 +106,7 @@ void cgl_UpdateSocket(Socket* _socket)
 			
 			BYTE* data = (BYTE*)malloc(_socket->packet->len);
 			memcpy(data, _socket->packet->data, _socket->packet->len);
-			int type = abs(data[0]);
+			int type = abs((int)data[0]);
 			
 			switch (type)
 			{
@@ -178,9 +178,10 @@ void cgl_SetCallbackSocket(Socket* _socket, const void* recv, const void* conn, 
 	_socket->callback_dconn = dconn;
 }
 
-Client cgl_GetClientSocket(Socket* _socket, int id)
+Client* cgl_GetClientSocket(Socket* _socket, int id)
 {
 	for (int i = 0; i < _socket->numclients; i++)
 		if (_socket->clients[i].id == id)
-			return _socket->clients[i];
+			return &_socket->clients[i];
+	return NULL;
 }

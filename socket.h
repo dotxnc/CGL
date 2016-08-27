@@ -61,7 +61,7 @@ void cgl_InitSocket(Socket*, const char*, int, CGL_SOCKET_TYPE);
 void cgl_UpdateSocket(Socket*);
 void cgl_SendSocket(Socket*, void*, unsigned int size);
 void cgl_SetCallbackSocket(Socket*, const void*, const void*, const void*);
-Client cgl_GetClientSocket(Socket*, int);
+Client* cgl_GetClientSocket(Socket*, int);
 void cgl_SendToClientSocket(Socket*, IPaddress, void*, unsigned int);
 
 // private cgl network functions

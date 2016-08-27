@@ -10,6 +10,7 @@ unsigned int splash_init()
 	cgl_InitSprite(&powered, "data/powered.png");
 	cgl_InitShaderProgram(&shader, "data/sprite_vert.glsl", "data/sprite_frag.glsl");
 	// printf("splash_init\n");
+	return 0;
 }
 
 unsigned int splash_update(Game* game, float dt)
@@ -23,6 +24,7 @@ unsigned int splash_update(Game* game, float dt)
 	if (flag == 2 && alpha > 0) alpha -= dt*0.3f;
 	if (flag == 2 && alpha <= 0) cgl_SetStateGame(game, &test_state);
 	
+	return 0;
 }
 
 unsigned int splash_render(GameWindow* window)
@@ -32,4 +34,6 @@ unsigned int splash_render(GameWindow* window)
 	cgl_DrawSpriteColor(&powered, &shader, _cgl_window_size[0]/2-powered.width/2, _cgl_window_size[1]/1.2-powered.height/2, color);
 	vec2 scale = {0.5, 0.5};
 	cgl_DrawSpriteScaleColor(&logo, &shader, _cgl_window_size[0]/2-logo.width*scale[0]/2, _cgl_window_size[1]/2-logo.height*scale[1]/2, scale, color);
+	
+	return 0;
 }

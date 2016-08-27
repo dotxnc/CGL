@@ -23,11 +23,14 @@ unsigned int test_init()
 		vec3 spec = {1, 1, 1};
 		cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
 	}
+	
+	return 0;
 }
 
 unsigned int test_update(Game* game, float dt)
 {
 	
+	return 0;
 }
 
 unsigned int test_render(GameWindow* window)
@@ -38,4 +41,5 @@ unsigned int test_render(GameWindow* window)
 	
 	vec3 tcolor = {1, 1, 1};
 	cgl_DrawText(&font, &text_shader, "FUCK", 10, 20, 0.3, tcolor);
+	return 0;
 }

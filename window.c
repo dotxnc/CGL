@@ -29,6 +29,7 @@ int cgl_InitGameWindow(GameWindow* window, char* title, int width, int height, b
 		printf("%s\n", glewGetErrorString(err));
 		return -1;
 	}
+	return 0;
 }
 
 bool cgl_WindowShouldClose(GameWindow* window)

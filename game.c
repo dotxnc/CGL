@@ -118,6 +118,7 @@ bool cgl_IsKeyDown(int key) {
 	if (key < 1024 && key >= 0) {
 		return keys[key];
 	}
+	return false;
 }
 
 bool cgl_IsKeyPressed(int key) {

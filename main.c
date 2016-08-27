@@ -8,78 +8,15 @@
 #include "sprite.h"
 
 #include "states/splash.h"
-
-static ShaderProgram main_shader;
-static ShaderProgram text_shader;
-static ShaderProgram sprite_shader;
-static Image box3d;
-static Camera cam;
-static Font font;
-static Sprite sprite;
-
-unsigned int init()
-{
-	cgl_InitShaderProgram(&main_shader, "data/texture_vert.glsl", "data/texture_frag.glsl");
-	cgl_InitShaderProgram(&text_shader, "data/text_vert.glsl", "data/text_frag.glsl");
-	cgl_InitShaderProgram(&sprite_shader, "data/sprite_vert.glsl", "data/sprite_frag.glsl");
-	
-	vec3 pos = {0, 0, 0};
-	vec3 size = {1, 1, 1};
-	cgl_InitImage(&box3d, "data/metal.jpg", "data/metal_specular.png", pos, size);
-	cgl_InitCamera(&cam, 0, 0, 5);
-	
-	box3d.rx = -20;
-	box3d.ry = 20;
-	
-	cgl_InitSprite(&sprite, "data/logo.png");
-	
-	cgl_InitFont(&font, "data/font.ttf");
-	
-	cgl_InitLights(4);
-	for (int i = 0; i < 4; i++) {
-		vec3 lpos = {1, 1, 1};
-		vec3 lamb = {0.2, 0.2, 0.2};
-		vec3 ldif = {0.8, 0.8, 0.8};
-		vec3 spec = {1, 1, 1};
-		cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
-	}
-	
-	return 0;
-}
-
-unsigned int update(float dt)
-{
-	if (cgl_IsKeyPressed(GLFW_KEY_F)) printf("key pressed f\n");
-	if (cgl_IsKeyDown(GLFW_KEY_G)) printf("key down g\n");
-	return 0;
-}
-
-unsigned int render(GameWindow* w)
-{
-	cam.aspect = cgl_GetWindowAspect(w);
-	
-	// cgl_DrawImage(&box3d, &main_shader, &cam);
-	
-	vec3 tcolor = {1, 1, 1};
-	cgl_DrawText(&font, &text_shader, "FUCK", 10, 20, 0.3, tcolor);
-	
-	vec2 scale = {0.5, 0.5};
-	cgl_DrawSpriteScale(&sprite, &sprite_shader, 0, 0, scale);
-	
-	return 0;
-}
+#include "states/test.h"
 
 int main(int argc, char** argv)
 {
-	// srand(time(NULL));
-	
-	GameState test;
-	cgl_InitGameState(&test, init, update, render);
-	
+	cgl_InitGameState(&test_state, test_init, test_update, test_render);
 	cgl_InitGameState(&splash_state, splash_init, splash_update, splash_render);
 	
 	Game game;
-	cgl_InitGame(&game, "3D Game", 800, 600);
+	cgl_InitGame(&game, "3D Game", 1280, 720);
 	cgl_SetStateGame(&game, &splash_state);
 	cgl_StartGame(&game);
 	

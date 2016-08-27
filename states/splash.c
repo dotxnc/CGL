@@ -12,7 +12,7 @@ unsigned int splash_init()
 	// printf("splash_init\n");
 }
 
-unsigned int splash_update(float dt)
+unsigned int splash_update(Game* game, float dt)
 {
 	timer += dt;
 	
@@ -21,8 +21,7 @@ unsigned int splash_update(float dt)
 	if (flag == 1) staytimer += dt;
 	if (staytimer > 1) flag = 2;
 	if (flag == 2 && alpha > 0) alpha -= dt*0.3f;
-	
-	// printf("%0.2f\n", alpha);
+	if (flag == 2 && alpha <= 0) cgl_SetStateGame(game, &test_state);
 	
 }
 
@@ -30,7 +29,6 @@ unsigned int splash_render(GameWindow* window)
 {
 	glClearColor(0, 0, 0, 1);
 	vec4 color = {alpha, alpha, alpha, alpha};
-	printf("%0.2f\n", color[3]);
 	cgl_DrawSpriteColor(&powered, &shader, _cgl_window_size[0]/2-powered.width/2, _cgl_window_size[1]/1.2-powered.height/2, color);
 	vec2 scale = {0.5, 0.5};
 	cgl_DrawSpriteScaleColor(&logo, &shader, _cgl_window_size[0]/2-logo.width*scale[0]/2, _cgl_window_size[1]/2-logo.height*scale[1]/2, scale, color);

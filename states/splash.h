@@ -7,6 +7,8 @@
 #include "../window.h"
 #include "../sprite.h"
 #include "../gamestate.h"
+#include "../game.h"
+#include "test.h"
 
 static float timer;
 static float staytimer;
@@ -17,7 +19,7 @@ static Sprite powered;
 static ShaderProgram shader;
 
 unsigned int splash_init();
-unsigned int splash_update(float);
+unsigned int splash_update(Game*, float);
 unsigned int splash_render(GameWindow*);
 
 GameState splash_state;

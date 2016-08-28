@@ -7,6 +7,7 @@
 #include "window.h"
 #include "gamestate.h"
 #include "shader.h"
+#include "framebuffer.h"
 
 struct GameState;
 
@@ -18,14 +19,7 @@ typedef struct Game {
 	float lasttime;
 	// TODO: framebuffers probably
 	
-	GLuint framebuffer;
-	GLuint colorbuffer;
-	GLuint renderbuffer;
-	
-	GLuint frameVAO;
-	GLuint frameVBO;
-	
-	ShaderProgram frameshader;
+	FrameBuffer framebuffer;
 } Game;
 
 void cgl_InitGame(Game*, char*, int, int);

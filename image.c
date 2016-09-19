@@ -86,8 +86,8 @@ void cgl_InitImage(Image* image, const char* path, const char* spec, vec3 pos, v
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	image->image = SOIL_load_image(path, &image->width, &image->height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->image);
+	image->image = SOIL_load_image(path, &image->width, &image->height, 0, SOIL_LOAD_RGBA);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->width, image->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image->image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image->image);
 	
@@ -109,7 +109,6 @@ void cgl_InitImage(Image* image, const char* path, const char* spec, vec3 pos, v
 
 void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 {
-
 	cgl_UseProgram(prog);
 
 	mat4x4 model;

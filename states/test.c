@@ -7,7 +7,8 @@ unsigned int test_init()
 	
 	vec3 pos = {0, 0, 0};
 	vec3 size = {1, 1, 1};
-	cgl_InitImage(&box, "data/metal.jpg", "data/metl_specular.png", pos, size);
+	// cgl_InitImage(&box, "data/metal.jpg", "data/metl_specular.png", pos, size);
+	cgl_InitImage(&box, "data/metal.jpg", "data/metal_specular.png", pos, size);
 	cgl_InitCamera(&cam, 0, 0, 5);
 	
 	cgl_InitFont(&font, "data/font.ttf");
@@ -16,7 +17,8 @@ unsigned int test_init()
 	box.ry = 20;
 	
 	cgl_InitLights(4);
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 2; i++) {
+		// vec3 lpos = {-10+rand()%10, -10+rand()%10, -10+rand()%10};
 		vec3 lpos = {1, 1, 1};
 		vec3 lamb = {0.2, 0.2, 0.2};
 		vec3 ldif = {0.8, 0.8, 0.8};
@@ -29,7 +31,9 @@ unsigned int test_init()
 
 unsigned int test_update(Game* game, float dt)
 {
-	
+	// cam.pos[0] = cos(glfwGetTime());
+	box.x = cos(glfwGetTime());
+	// cam.front[0] = cos(glfwGetTime());
 	return 0;
 }
 

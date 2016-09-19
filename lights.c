@@ -13,6 +13,8 @@ void cgl_DeleteLights()
 
 int cgl_AddLight(ShaderProgram* shader, vec3 pos, vec3 amb, vec3 dif, vec3 spec)
 {
+	glUniform1i(glGetUniformLocation(shader->program, "usable_lights"), _cgl_numlights);
+	
 	cgl_UseProgram(shader);
 	
 	lights[_cgl_numlights].position[0] = pos[0];

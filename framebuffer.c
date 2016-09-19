@@ -68,6 +68,8 @@ void cgl_DrawFrameBuffer(FrameBuffer* buffer)
 	
 	glBindVertexArray(buffer->VAO);
 	glDisable(GL_DEPTH_TEST);
+	
+	// TODO: REPLACE THIS
 	cgl_UseProgram(&buffer->shader);
 	
 	glActiveTexture(GL_TEXTURE0);

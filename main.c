@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	
 	Game game;
 	cgl_InitGame(&game, "3D Game", 1280, 720);
-	cgl_SetStateGame(&game, &splash_state);
+	cgl_SetStateGame(&game, &test_state);
 	cgl_StartGame(&game);
 	
 	cgl_DeleteLights();

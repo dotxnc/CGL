@@ -1,9 +1,10 @@
 #include "lights.h"
 
-void cgl_InitLights(int max_lights)
+void cgl_InitLights(int max_lights, ShaderProgram* shader)
 {
 	lights = (PointLight*)malloc(max_lights*sizeof(PointLight));
 	_cgl_numlights = 0;
+	glUniform1i(glGetUniformLocation(shader->program, "usable_lights"), _cgl_numlights);
 }
 
 void cgl_DeleteLights()
@@ -13,7 +14,7 @@ void cgl_DeleteLights()
 
 int cgl_AddLight(ShaderProgram* shader, vec3 pos, vec3 amb, vec3 dif, vec3 spec)
 {
-	glUniform1i(glGetUniformLocation(shader->program, "usable_lights"), _cgl_numlights);
+	glUniform1i(glGetUniformLocation(shader->program, "usable_lights"), _cgl_numlights+1);
 	
 	cgl_UseProgram(shader);
 	

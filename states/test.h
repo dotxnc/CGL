@@ -12,6 +12,7 @@
 static ShaderProgram main_shader;
 static ShaderProgram text_shader;
 static Image box;
+static Image ground;
 static Camera cam;
 static Font font;
 

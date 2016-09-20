@@ -29,6 +29,10 @@ void cgl_StartGame(Game*);
 bool cgl_IsKeyDown(int);
 bool cgl_IsKeyPressed(int);
 
+bool cgl_IsMouseDown(int);
+bool cgl_IsMousePressed(int);
+
 static void _cgl_keypressed(GLFWwindow*, int, int, int, int);
+static void _cgl_mousepressed(GLFWwindow*, int, int, int);
 
 #endif

@@ -1,6 +1,7 @@
 #include "game.h"
 
 static bool keys[1024];
+static bool mbuttons[10];
 
 void cgl_InitGame(Game* game, char* title, int width, int height)
 {
@@ -24,6 +25,7 @@ void cgl_SetStateGame(Game* game, GameState* state)
 void cgl_StartGame(Game* game)
 {
 	glfwSetKeyCallback(game->window.window, _cgl_keypressed);
+	glfwSetMouseButtonCallback(game->window.window, _cgl_mousepressed);
 	
 	while (!cgl_WindowShouldClose(&game->window))
 	{
@@ -71,11 +73,35 @@ bool cgl_IsKeyPressed(int key) {
 	return false;
 }
 
+bool cgl_IsMouseDown(int mouse) {
+	if (mouse >= 0 && mouse < 10) {
+		return mbuttons[mouse];
+	}
+	return false;
+}
+
+bool cgl_IsMousePressed(int mouse) {
+	if (cgl_IsMouseDown(mouse)) {
+		mbuttons[mouse] = false;
+		return true;
+	}
+	return false;
+}
+
 void _cgl_keypressed(GLFWwindow* window, int key, int scan, int action, int mods)
 {
 	if (action == GLFW_PRESS) {
 		keys[key] = true;
 	} else if (action == GLFW_RELEASE) {
 		keys[key] = false;
+	}
+}
+
+void _cgl_mousepressed(GLFWwindow* window, int button, int action, int mods)
+{
+	if (action == GLFW_PRESS) {
+		mbuttons[button] = true;
+	} else if (action == GLFW_RELEASE) {
+		mbuttons[button] = false;
 	}
 }

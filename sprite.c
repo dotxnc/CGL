@@ -82,11 +82,11 @@ void _cgl_drawsprite(Sprite* sprite, ShaderProgram* shader, float x, float y, ve
 	glBindVertexArray(sprite->VAO);
 	
 	float vertices[6][4] = {
-		{ x,                 y + sprite->height*scale[1],   0.0, 0.0 },            
-		{ x,                 y,                    0.0, 1.0 },
-		{ x + sprite->width*scale[0], y,                    1.0, 1.0 },
-		{ x,                 y + sprite->height*scale[1],   0.0, 0.0 },
-		{ x + sprite->width*scale[0], y,                    1.0, 1.0 },
+		{ x,                          y + sprite->height*scale[1],   0.0, 0.0 },            
+		{ x,                          y,                             0.0, 1.0 },
+		{ x + sprite->width*scale[0], y,                             1.0, 1.0 },
+		{ x,                          y + sprite->height*scale[1],   0.0, 0.0 },
+		{ x + sprite->width*scale[0], y,                             1.0, 1.0 },
 		{ x + sprite->width*scale[0], y + sprite->height*scale[1],   1.0, 0.0 }
 	};
 	

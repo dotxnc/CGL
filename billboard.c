@@ -54,12 +54,12 @@ void cgl_DrawBillboard(Billboard* bill, ShaderProgram* shader, Camera* cam)
 	glBindVertexArray(bill->VAO);
 	
 	float vertices[6][5] = {
-		{ 0,                  bill->height/1280.f, 1,    0.0, 0.0},
-		{ 0,                  0,                  1,    0.0, 1.0},
-		{ bill->width/1280.f, 0,                  1,    1.0, 1.0},
-		{ 0,                  bill->height/1280.f, 1,    0.0, 0.0},
-		{ bill->width/1280.f, 0,                  1,    1.0, 1.0},
-		{ bill->width/1280.f, bill->height/1280.f, 1,    1.0, 0.0}
+		{ 0,                  bill->height/1280.f, 0,    0.0, 0.0},
+		{ 0,                  0,                  0,    0.0, 1.0},
+		{ bill->width/1280.f, 0,                  0,    1.0, 1.0},
+		{ 0,                  bill->height/1280.f, 0,    0.0, 0.0},
+		{ bill->width/1280.f, 0,                  0,    1.0, 1.0},
+		{ bill->width/1280.f, bill->height/1280.f, 0,    1.0, 0.0}
 	};
 	
 	glBindTexture(GL_TEXTURE_2D, bill->texture);

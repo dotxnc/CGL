@@ -35,6 +35,8 @@ unsigned int test_init()
 	lpos[0] = -1;
 	cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
 	
+	logo_light = cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
+	
 	return 0;
 }
 
@@ -47,7 +49,8 @@ unsigned int test_update(Game* game, float dt)
 	
 	blogo.x = box.x-0.2;
 	blogo.y = 0.5;
-	blogo.z = -1;
+	lights[logo_light].position[0] = box.x;
+	lights[logo_light].position[1] = 0.5;
 	
 	cgl_LookAtCamera(&cam, cam.pos[0]+cam.front[0], cam.pos[1]+cam.front[1], cam.pos[2]+cam.front[2]);
 	

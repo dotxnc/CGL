@@ -19,6 +19,7 @@ static Camera cam;
 static Font font;
 static Billboard board;
 static Billboard blogo;
+static int logo_light;
 
 unsigned int test_init();
 unsigned int test_update(Game*, float);

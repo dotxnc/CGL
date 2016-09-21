@@ -70,6 +70,10 @@ void cgl_StartGame(Game* game)
 	}
 }
 
+void cgl_SetCaptureMouse(Game* game, bool capture) {
+	glfwSetInputMode(game->window.window, GLFW_CURSOR, capture ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+}
+
 bool cgl_IsKeyDown(int key) {
 	if (key < 1024 && key >= 0) {
 		return keys[key];

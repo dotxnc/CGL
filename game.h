@@ -32,6 +32,8 @@ void cgl_InitGame(Game*, char*, int, int);
 void cgl_SetStateGame(Game*, struct GameState*);
 void cgl_StartGame(Game*);
 
+void cgl_SetCaptureMouse(Game*, bool);
+
 bool cgl_IsKeyDown(int);
 bool cgl_IsKeyPressed(int);
 

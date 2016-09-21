@@ -38,3 +38,57 @@ void cgl_UpdateShaderCamera(Camera* cam, ShaderProgram* prog)
 	
 	glUniform3f(glGetUniformLocation(prog->program, "viewPos"), cam->pos[0], cam->pos[1], cam->pos[2]);
 }
+
+/// FPS CAMERA
+
+static double _lastx;
+static double _lasty;
+static bool first = true;
+
+static double yaw  =0;
+static double pitch=0;
+static double roll =0;
+
+void cgl_UpdateFPSCamera(Camera* cam, double mx, double my)
+{
+	if (first)
+	{
+		_lastx = mx;
+		_lastx = my;
+		first = false;
+	}
+	
+	float xoff = mx - _lastx;
+	float yoff = _lasty - my;
+	_lastx = mx;
+	_lasty = my;
+	
+	float sens = 0.05f;
+	xoff *= sens;
+	yoff *= sens;
+	
+	yaw += xoff;
+	pitch += yoff;
+	
+	if (pitch > 89.f)
+		pitch = 89.f;
+	if (pitch < -89.f)
+		pitch = -89.f;
+	
+	vec3 front;
+	front[0] = cos(rads(yaw));
+	front[1] = 0;
+	front[2] = sin(rads(yaw));
+	vec3_norm(cam->vfront, front);
+	
+	front[0] = cos(rads(pitch)) * cos(rads(yaw));
+	front[1] = sin(rads(pitch));
+	front[2] = cos(rads(pitch)) * sin(rads(yaw));
+	vec3_norm(cam->front, front);
+	
+	
+	// cam->front[0] = front[0];
+	// cam->front[1] = front[1];
+	// cam->front[2] = front[2];
+	
+}

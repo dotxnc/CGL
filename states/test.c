@@ -42,35 +42,49 @@ unsigned int test_init()
 
 unsigned int test_update(Game* game, float dt)
 {
+	cgl_SetCaptureMouse(game, true);
+	
 	box.x = cos(glfwGetTime())*2;
 	// cam.pos[1] = sin(glfwGetTime());
 	// cam.pos[0] = sin(0.7*glfwGetTime());
 	// cam.pos[2] = sin(0.4*glfwGetTime())*5;
 	
-	blogo.x = box.x-0.2;
-	blogo.y = 0.5;
+	blogo.x = box.x;
+	blogo.y = 0.9;
 	lights[logo_light].position[0] = box.x;
 	lights[logo_light].position[1] = 0.5;
 	
 	cgl_LookAtCamera(&cam, cam.pos[0]+cam.front[0], cam.pos[1]+cam.front[1], cam.pos[2]+cam.front[2]);
 	
-	int spd = 3;
+	float spd = 3.f;
 	
 	if (cgl_IsKeyDown(GLFW_KEY_W)) {
-		vec3 speed = {0, 0, -spd*dt};
-		vec3_add(cam.pos, cam.pos, speed);
+		vec3 dir;
+		for(int i=0;i<3;i++) dir[i]=cam.vfront[i]*(spd*dt);
+		vec3_add(cam.pos, cam.pos, dir);
 	}
 	if (cgl_IsKeyDown(GLFW_KEY_S)) {
-		vec3 speed = {0, 0, spd*dt};
-		vec3_add(cam.pos, cam.pos, speed);
+		vec3 dir;
+		for(int i=0;i<3;i++) dir[i]=cam.vfront[i]*(spd*dt);
+		vec3_sub(cam.pos, cam.pos, dir);
 	}
 	if (cgl_IsKeyDown(GLFW_KEY_A)) {
-		vec3 speed = {-spd*dt, 0, 0};
-		vec3_add(cam.pos, cam.pos, speed);
+		vec3 dir;
+		vec3_mul_cross(dir, cam.vfront, cam.up);
+		vec3_norm(dir, dir);
+		dir[0] *= 5.0 * dt;
+		dir[1] *= 5.0 * dt;
+		dir[2] *= 5.0 * dt;
+		vec3_sub(cam.pos, cam.pos, dir);
 	}
 	if (cgl_IsKeyDown(GLFW_KEY_D)) {
-		vec3 speed = {spd*dt, 0, 0};
-		vec3_add(cam.pos, cam.pos, speed);
+		vec3 dir;
+		vec3_mul_cross(dir, cam.vfront, cam.up);
+		vec3_norm(dir, dir);
+		dir[0] *= 5.0 * dt;
+		dir[1] *= 5.0 * dt;
+		dir[2] *= 5.0 * dt;
+		vec3_add(cam.pos, cam.pos, dir);
 	}
 	if (cgl_IsKeyDown(GLFW_KEY_SPACE)) {
 		vec3 speed = {0, spd*dt, 0};
@@ -107,5 +121,5 @@ unsigned int test_render(GameWindow* window)
 
 unsigned int test_mousemoved(double x, double y)
 {
-	printf("mouse_moved: %0.0fx%0.0f\n", x, y);
+	cgl_UpdateFPSCamera(&cam, x, y);
 }

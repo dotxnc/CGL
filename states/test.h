@@ -18,10 +18,12 @@ static Image ground;
 static Camera cam;
 static Font font;
 static Billboard board;
+static Billboard blogo;
 
 unsigned int test_init();
 unsigned int test_update(Game*, float);
 unsigned int test_render(GameWindow*);
+unsigned int test_mousemoved(double, double);
 
 GameState test_state;
 

@@ -12,8 +12,8 @@
 
 int main(int argc, char** argv)
 {
-	cgl_InitGameState(&test_state, test_init, test_update, test_render);
-	cgl_InitGameState(&splash_state, splash_init, splash_update, splash_render);
+	cgl_InitGameState(&test_state, test_init, test_update, test_render, test_mousemoved);
+	cgl_InitGameState(&splash_state, splash_init, splash_update, splash_render, splash_mousemoved);
 	
 	Game game;
 	cgl_InitGame(&game, "3D Game", 1280, 720);

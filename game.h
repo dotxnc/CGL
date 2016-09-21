@@ -9,6 +9,12 @@
 #include "shader.h"
 #include "framebuffer.h"
 
+struct _cgl_mouseupdate {
+	bool needs_update;
+	double x,y;
+};
+static struct _cgl_mouseupdate _cgl_msupdt;
+
 struct GameState;
 
 typedef struct Game {
@@ -34,5 +40,6 @@ bool cgl_IsMousePressed(int);
 
 static void _cgl_keypressed(GLFWwindow*, int, int, int, int);
 static void _cgl_mousepressed(GLFWwindow*, int, int, int);
+static void _cgl_mousemoved(GLFWwindow*, double, double);
 
 #endif

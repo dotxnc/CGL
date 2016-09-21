@@ -11,6 +11,10 @@ void cgl_InitGame(Game* game, char* title, int width, int height)
 	
 	cgl_InitFrameBuffer(&game->framebuffer, width, height);
 	
+	_cgl_msupdt.needs_update = false;
+	_cgl_msupdt.x = 0;
+	_cgl_msupdt.y = 0;
+	
 }
 
 void cgl_SetStateGame(Game* game, GameState* state)
@@ -26,6 +30,7 @@ void cgl_StartGame(Game* game)
 {
 	glfwSetKeyCallback(game->window.window, _cgl_keypressed);
 	glfwSetMouseButtonCallback(game->window.window, _cgl_mousepressed);
+	glfwSetCursorPosCallback(game->window.window, _cgl_mousemoved);
 	
 	while (!cgl_WindowShouldClose(&game->window))
 	{
@@ -38,6 +43,13 @@ void cgl_StartGame(Game* game)
 		
 		if (game->current_state != NULL)
 			game->current_state->update(game, game->delta);
+		
+		if (game->current_state != NULL) {
+			if (_cgl_msupdt.needs_update) {
+				game->current_state->mousemoved(_cgl_msupdt.x, _cgl_msupdt.y);
+				_cgl_msupdt.needs_update = false;
+			}
+		}
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.2, 0.2, 0.2, 1.0);
@@ -103,5 +115,14 @@ void _cgl_mousepressed(GLFWwindow* window, int button, int action, int mods)
 		mbuttons[button] = true;
 	} else if (action == GLFW_RELEASE) {
 		mbuttons[button] = false;
+	}
+}
+
+void _cgl_mousemoved(GLFWwindow* window, double x, double y)
+{
+	if (x != _cgl_msupdt.x || y != _cgl_msupdt.y) {
+		_cgl_msupdt.needs_update = true;
+		_cgl_msupdt.x = x;
+		_cgl_msupdt.y = y;
 	}
 }

@@ -21,6 +21,7 @@ static ShaderProgram shader;
 unsigned int splash_init();
 unsigned int splash_update(Game*, float);
 unsigned int splash_render(GameWindow*);
+unsigned int splash_mousemoved(double, double);
 
 GameState splash_state;
 

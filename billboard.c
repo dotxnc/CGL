@@ -47,7 +47,6 @@ void cgl_DrawBillboard(Billboard* bill, ShaderProgram* shader, Camera* cam)
 	mat4x4 model;
 	mat4x4_identity(model);
 	mat4x4_translate(model, bill->x, bill->y, bill->z);
-	// mat4x4_look_at(model, pos, cam->pos, cam->up);
 	
 	glUniformMatrix4fv(glGetUniformLocation(shader->program, "model"), 1, GL_FALSE, *model);
 	
@@ -62,7 +61,6 @@ void cgl_DrawBillboard(Billboard* bill, ShaderProgram* shader, Camera* cam)
 		{ bill->width/1280.f, 0,                  1,    1.0, 1.0},
 		{ bill->width/1280.f, bill->height/1280.f, 1,    1.0, 0.0}
 	};
-	printf("%0.10fx%0.10f\n", (float)bill->width/1280.f, (float)bill->height/720.f);
 	
 	glBindTexture(GL_TEXTURE_2D, bill->texture);
 	glBindBuffer(GL_ARRAY_BUFFER, bill->VBO);

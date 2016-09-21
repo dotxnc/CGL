@@ -37,3 +37,8 @@ unsigned int splash_render(GameWindow* window)
 	
 	return 0;
 }
+
+unsigned int splash_mousemoved(double x, double y)
+{
+	
+}

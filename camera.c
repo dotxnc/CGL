@@ -45,7 +45,7 @@ static double _lastx;
 static double _lasty;
 static bool first = true;
 
-static double yaw  =0;
+static double yaw  =-90;
 static double pitch=0;
 static double roll =0;
 

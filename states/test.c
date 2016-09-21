@@ -9,7 +9,7 @@ unsigned int test_init()
 	vec3 pos = {0, 0, 0};
 	vec3 size = {1, 1, 1};
 	// cgl_InitImage(&box, "data/metal.jpg", "data/metl_specular.png", pos, size);
-	cgl_InitImage(&box, "data/metal.jpg", "data/SpecularMap.png", pos, size);
+	cgl_InitImage(&box, "data/metal.jpg", "data/metal_specular.png", pos, size);
 	
 	vec3 gpos = {0, -1, 0};
 	vec3 gsize = {7, 0.1, 7};
@@ -18,7 +18,7 @@ unsigned int test_init()
 	
 	cgl_InitFont(&font, "data/font.ttf");
 	
-	cgl_InitBillboard(&board, "data/light.png", 0, 0, 2);
+	cgl_InitBillboard(&board, "data/bulb.png", 0, 0, 2);
 	cgl_InitBillboard(&blogo, "data/logo.png", 0, 2, 0);
 	
 	// box.rx = -20;

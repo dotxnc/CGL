@@ -41,6 +41,10 @@ void cgl_DrawBillboard(Billboard* bill, ShaderProgram* shader, Camera* cam)
 {
 	
 	cgl_UseProgram(shader);
+	// glDepthMask(false);
+	// glDisable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.5);
 	
 	vec3 pos = {bill->x, bill->y, bill->z};
 	
@@ -72,5 +76,8 @@ void cgl_DrawBillboard(Billboard* bill, ShaderProgram* shader, Camera* cam)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	glDisable(GL_ALPHA_TEST);
+	glDepthMask(true);
 	
 }

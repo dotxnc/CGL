@@ -18,24 +18,17 @@ unsigned int test_init()
 	
 	cgl_InitFont(&font, "data/font.ttf");
 	
-	cgl_InitBillboard(&board, "data/bulb.png", 0, 0, 2);
+	cgl_InitBillboard(&board, "data/light.png", 0, 0, 2);
 	cgl_InitBillboard(&blogo, "data/logo.png", 0, 2, 0);
-	
-	// box.rx = -20;
-	// box.ry = 20;
 	
 	cgl_InitLights(100, &main_shader);
 	vec3 lpos = {1, 0, 2};
 	vec3 lamb = {0.1, 0.1, 0.1};
 	vec3 ldif = {0.8, 0.5, 0.8};
 	vec3 spec = {1, 1, 1};
-	// cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
-	lpos[1] = 0;
 	cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
 	lpos[0] = -1;
 	cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
-	
-	logo_light = cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
 	
 	return 0;
 }
@@ -45,14 +38,9 @@ unsigned int test_update(Game* game, float dt)
 	cgl_SetCaptureMouse(game, true);
 	
 	box.x = cos(glfwGetTime())*2;
-	// cam.pos[1] = sin(glfwGetTime());
-	// cam.pos[0] = sin(0.7*glfwGetTime());
-	// cam.pos[2] = sin(0.4*glfwGetTime())*5;
 	
 	blogo.x = box.x;
 	blogo.y = 0.9;
-	lights[logo_light].position[0] = box.x;
-	lights[logo_light].position[1] = 0.5;
 	
 	cgl_LookAtCamera(&cam, cam.pos[0]+cam.front[0], cam.pos[1]+cam.front[1], cam.pos[2]+cam.front[2]);
 	

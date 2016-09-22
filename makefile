@@ -8,7 +8,7 @@ clib = \
 	-lws2_32 \
 	-lSDL2_net \
 	-lpthread
-cflags = -LC:/Bin/mingw/lib -IC:/Bin/mingw/include -w
+cflags = -LC:/Bin/mingw/lib -IC:/Bin/mingw/include -w -fpermissive
 
 src = $(wildcard *.c) \
 	$(wildcard soil/*.c) \
@@ -16,4 +16,4 @@ src = $(wildcard *.c) \
 	$(wildcard util/*.c)
 
 all: $(src)
-	gcc -o release/cgl.exe $^ $(cflags) $(clib)
+	g++ -o release/cgl.exe $^ $(cflags) $(clib)

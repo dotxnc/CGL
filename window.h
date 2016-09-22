@@ -15,7 +15,7 @@ typedef struct {
 	int height;
 } GameWindow;
 
-vec2 _cgl_window_size;
+extern vec2 _cgl_window_size;
 
 int cgl_InitGameWindow(GameWindow*, char*, int, int, bool);
 bool cgl_WindowShouldClose(GameWindow*);

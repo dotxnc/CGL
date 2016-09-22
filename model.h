@@ -7,23 +7,15 @@
 #include "camera.h"
 #include "shader.h"
 
-#include "util/tinyobj_loader_c.h"
-
-#define MAXBUFLEN 100000
+#include "util/obj_parser.h"
 
 typedef struct Model {
 	GLuint VAO;
 	GLuint VBO;
 	
-	tinyobj_attrib_t    obj;
-	tinyobj_shape_t*    shape;
-	tinyobj_material_t* materials;
-	
-	size_t num_shapes;
-	size_t num_materials;
-	
 } Model;
 
 void cgl_LoadModel(Model*, const char*);
+void cgl_DrawModel(Model*, ShaderProgram*, Camera*, float, float, float);
 
 #endif /* end of include guard: MODEL_H */

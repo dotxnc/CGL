@@ -1,5 +1,7 @@
 #include "test.h"
 
+GameState test_state;
+
 unsigned int test_init()
 {
 	cgl_InitShaderProgram(&main_shader, "data/texture_vert.glsl", "data/texture_frag.glsl");
@@ -30,8 +32,7 @@ unsigned int test_init()
 	lpos[0] = -1;
 	cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
 	
-	Model model;
-	cgl_LoadModel(&model, "data/fuck.obj");
+	cgl_LoadModel(&model, "data/test.obj");
 	
 	return 0;
 }
@@ -102,8 +103,9 @@ unsigned int test_render(GameWindow* window)
 	cgl_DrawBillboard(&board, &bill_shader, &cam);
 	board.x = -1;
 	cgl_DrawBillboard(&board, &bill_shader, &cam);
-	
 	cgl_DrawBillboard(&blogo, &bill_shader, &cam);
+	
+	cgl_DrawModel(&model, &main_shader, &cam, 0, 0, 0);
 	
 	vec3 tcolor = {1, 1, 1};
 	cgl_DrawText(&font, &text_shader, "FUCK", 10, 20, 0.3, tcolor);

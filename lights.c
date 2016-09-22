@@ -1,5 +1,8 @@
 #include "lights.h"
 
+PointLight* lights;
+int _cgl_numlights;
+
 void cgl_InitLights(int max_lights, ShaderProgram* shader)
 {
 	lights = (PointLight*)malloc(max_lights*sizeof(PointLight));

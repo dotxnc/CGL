@@ -15,8 +15,8 @@ typedef struct {
 	vec3 specular;
 } PointLight;
 
-PointLight* lights;
-int _cgl_numlights;
+extern PointLight* lights;
+extern int _cgl_numlights;
 
 void cgl_InitLights(int, ShaderProgram*);
 void cgl_DeleteLights();

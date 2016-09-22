@@ -1,5 +1,7 @@
 #include "splash.h"
 
+GameState splash_state;
+
 unsigned int splash_init()
 {
 	timer = 0;

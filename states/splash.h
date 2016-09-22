@@ -23,6 +23,6 @@ unsigned int splash_update(Game*, float);
 unsigned int splash_render(GameWindow*);
 unsigned int splash_mousemoved(double, double);
 
-GameState splash_state;
+extern GameState splash_state;
 
 #endif

@@ -1,5 +1,7 @@
 #include "window.h"
 
+vec2 _cgl_window_size;
+
 int cgl_InitGameWindow(GameWindow* window, char* title, int width, int height, bool resizable)
 {
 	_cgl_window_size[0] = width;

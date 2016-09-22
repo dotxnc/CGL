@@ -21,12 +21,13 @@ static Font font;
 static Billboard board;
 static Billboard blogo;
 static int logo_light;
+static Model model;
 
 unsigned int test_init();
 unsigned int test_update(Game*, float);
 unsigned int test_render(GameWindow*);
 unsigned int test_mousemoved(double, double);
 
-GameState test_state;
+extern GameState test_state;
 
 #endif

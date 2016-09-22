@@ -1,4 +1,6 @@
 
+#define TINYOBJ_LOADER_C_IMPLEMENTATION
+
 #include <pthread.h>
 #include "game.h"
 #include "image.h"

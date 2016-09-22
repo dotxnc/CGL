@@ -9,6 +9,7 @@
 #include "../font.h"
 #include "../lights.h"
 #include "../billboard.h"
+#include "../model.h"
 
 static ShaderProgram main_shader;
 static ShaderProgram text_shader;

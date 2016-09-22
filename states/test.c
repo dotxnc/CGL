@@ -30,7 +30,8 @@ unsigned int test_init()
 	lpos[0] = -1;
 	cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
 	
-	cgl_LoadModel(NULL, "data/fuck.obj");
+	Model model;
+	cgl_LoadModel(&model, "data/fuck.obj");
 	
 	return 0;
 }

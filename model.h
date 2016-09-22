@@ -7,24 +7,9 @@
 #include "camera.h"
 #include "shader.h"
 
-#include <float.h>
-#include <limits.h>
-#include <math.h>
-#include <assert.h>
-
-#ifdef _WIN64
-#define atoll(S) _atoi64(S)
-#include "util/windows-mmap.h"
-#else
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <unistd.h>
-#endif
-
 #include "util/tinyobj_loader_c.h"
+
+#define MAXBUFLEN 100000
 
 typedef struct Model {
 	GLuint VAO;

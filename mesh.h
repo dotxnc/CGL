@@ -6,6 +6,8 @@
 #include "window.h"
 #include "shader.h"
 
+#include "util/list.h"
+
 typedef struct Vertex {
 	vec3 Position;
 	vec3 Normal;
@@ -18,9 +20,9 @@ typedef struct Texture {
 } Texture;
 
 typedef struct Mesh {
-	Vertex* vertices;
-	GLuint* indices;
-	Texture* textures;
+	list vertices;
+	list indices;
+	list textures;
 	
 	int num_vertices;
 	int num_indices;
@@ -31,7 +33,7 @@ typedef struct Mesh {
 	GLuint EBO;
 } Mesh;
 
-void cgl_InitMesh(Mesh*, Vertex*, GLuint*, Texture*, int, int, int);
+void cgl_InitMesh(Mesh*, list*, list*, list*, int, int, int);
 void cgl_DrawMesh(Mesh*, ShaderProgram*);
 
 static void _cgl_setupmesh(Mesh*);

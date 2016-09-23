@@ -31,8 +31,11 @@ unsigned int test_init()
 	cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
 	lpos[0] = -1;
 	cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
+	lpos[0] = 0;
+	lpos[2] = -2;
+	cgl_AddLight(&main_shader, lpos, lamb, ldif, spec);
 	
-	cgl_LoadModel(&model, "data/test.obj");
+	cgl_LoadModel(&model, "data/airboat.obj");
 	
 	return 0;
 }
@@ -99,13 +102,20 @@ unsigned int test_render(GameWindow* window)
 	cgl_DrawImage(&box, &main_shader, &cam);
 	cgl_DrawImage(&ground, &main_shader, &cam);
 	
+	board.y = 0;
+	board.z = 2;
 	board.x = 1;
 	cgl_DrawBillboard(&board, &bill_shader, &cam);
 	board.x = -1;
 	cgl_DrawBillboard(&board, &bill_shader, &cam);
+	board.x = 0;
+	board.y = 1.5;
+	board.z = -2;
+	cgl_DrawBillboard(&board, &bill_shader, &cam);
+	
 	cgl_DrawBillboard(&blogo, &bill_shader, &cam);
 	
-	cgl_DrawModel(&model, &main_shader, &cam, 0, 0, 0);
+	// cgl_DrawModel(&model, &main_shader, &cam, 0, 0, 0);
 	
 	vec3 tcolor = {1, 1, 1};
 	cgl_DrawText(&font, &text_shader, "FUCK", 10, 20, 0.3, tcolor);

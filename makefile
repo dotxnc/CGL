@@ -7,7 +7,8 @@ clib = \
 	-lfreetype \
 	-lws2_32 \
 	-lSDL2_net \
-	-lpthread
+	-lpthread \
+	-lassimp.dll
 cflags = -LC:/Bin/mingw/lib -IC:/Bin/mingw/include -w -fpermissive
 
 src = $(wildcard *.c) \

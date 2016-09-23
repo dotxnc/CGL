@@ -6,13 +6,13 @@
 #include <stdlib.h>
 #include "camera.h"
 #include "shader.h"
+#include "mesh.h"
 
 #include "util/obj_parser.h"
 
 typedef struct Model {
-	GLuint VAO;
-	GLuint VBO;
-	
+	Mesh* meshes;
+	char* directory;
 } Model;
 
 void cgl_LoadModel(Model*, const char*);

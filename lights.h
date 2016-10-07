@@ -22,5 +22,6 @@ void cgl_InitLights(int, ShaderProgram*);
 void cgl_DeleteLights();
 int cgl_AddLight(ShaderProgram*, vec3, vec3, vec3, vec3); // returns index
 int cgl_DrawLight();
+void cgl_FreeLights();
 
 #endif

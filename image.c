@@ -152,3 +152,8 @@ void cgl_DrawImage(Image* image, ShaderProgram* prog, Camera* cam)
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 }
+
+void cgl_FreeImage(Image* image)
+{
+	free(image->image);
+}

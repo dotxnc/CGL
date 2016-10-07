@@ -25,5 +25,7 @@ typedef struct {
 
 void cgl_InitFont(Font*, const char*);
 void cgl_DrawText(Font*, ShaderProgram*, const char*, float, float, float, vec3);
+void cgl_DrawTextFmt(Font*, ShaderProgram*, float, float, float, vec3, const char*, ...);
+void cgl_FreeFont(Font*);
 
 #endif

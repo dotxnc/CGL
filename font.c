@@ -78,7 +78,7 @@ void cgl_DrawText(Font* font, ShaderProgram* shader, const char* text, float x, 
 	// ortho matrix for text
 	mat4x4 ortho;
 	mat4x4_identity(ortho);
-	mat4x4_ortho(ortho, 0.0, 800, 0.0, 600, 0, 100);
+	mat4x4_ortho(ortho, 0.0, _cgl_window_size[0], 0.0, _cgl_window_size[1], 0, 100);
 	glUniformMatrix4fv(glGetUniformLocation(shader->program, "projection"), 1, GL_FALSE, *ortho);
 	
 	glUniform3f(glGetUniformLocation(shader->program, "textColor"), color[0], color[1], color[2]);
@@ -113,4 +113,22 @@ void cgl_DrawText(Font* font, ShaderProgram* shader, const char* text, float x, 
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
+}
+
+void cgl_DrawTextFmt(Font* font, ShaderProgram* shader, float x, float y, float scale, vec3 color, const char* text, ...)
+{
+	va_list arg;
+	int done;
+	char fmt[512];
+
+	va_start(arg, text);
+	done = vsprintf(fmt, text, arg);
+	va_end(arg);
+	
+	cgl_DrawText(font, shader, fmt, x, y, scale, color);
+}
+
+void cgl_FreeFont(Font* font)
+{
+	free(font->chars);
 }

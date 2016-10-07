@@ -33,8 +33,9 @@ typedef struct Mesh {
 	GLuint EBO;
 } Mesh;
 
-void cgl_InitMesh(Mesh*, list*, list*, list*, int, int, int);
+void cgl_InitMesh(Mesh*, list, list, list, int, int, int);
 void cgl_DrawMesh(Mesh*, ShaderProgram*);
+void cgl_FreeMesh(Mesh*);
 
 static void _cgl_setupmesh(Mesh*);
 

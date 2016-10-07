@@ -22,5 +22,6 @@ void cgl_InitCamera(Camera*, float, float, float);
 void cgl_LookAtCamera(Camera*, float, float, float);
 void cgl_UpdateShaderCamera(Camera*, ShaderProgram*);
 void cgl_UpdateFPSCamera(Camera*, double, double);
+void cgl_FreeCamera(Camera*);
 
 #endif

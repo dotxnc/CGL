@@ -10,10 +10,13 @@
 #include "../lights.h"
 #include "../billboard.h"
 #include "../model.h"
+#include "../shaperenderer.h"
 
 static ShaderProgram main_shader;
 static ShaderProgram text_shader;
 static ShaderProgram bill_shader;
+static ShaderProgram shape_shader;
+static ShaderProgram sprite_shader;
 static Image box;
 static Image ground;
 static Camera cam;
@@ -22,6 +25,7 @@ static Billboard board;
 static Billboard blogo;
 static int logo_light;
 static Model model;
+static ShapeRenderer sr;
 
 unsigned int test_init();
 unsigned int test_update(Game*, float);

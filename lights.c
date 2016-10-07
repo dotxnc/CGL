@@ -65,3 +65,8 @@ int cgl_AddLight(ShaderProgram* shader, vec3 pos, vec3 amb, vec3 dif, vec3 spec)
 	_cgl_numlights++;
 	return _cgl_numlights-1;
 }
+
+void cgl_FreeLights()
+{
+	free(lights);
+}

@@ -74,7 +74,7 @@ void _cgl_drawsprite(Sprite* sprite, ShaderProgram* shader, float x, float y, ve
 	mat4x4_ortho(ortho, 0.0, _cgl_window_size[0], 0.0, _cgl_window_size[1], -1, 1);
 	glUniformMatrix4fv(glGetUniformLocation(shader->program, "projection"), 1, GL_FALSE, *ortho);
 	
-	glUniform4f(glGetUniformLocation(shader->program, "ucolor"), color[0], color[1], color[2], color[2]);
+	glUniform4f(glGetUniformLocation(shader->program, "ucolor"), color[0], color[1], color[2], color[3]);
 	
 	// glUniform3f(glGetUniformLocation(shader->program, "textColor"), 1, 1, 1);
 	glActiveTexture(GL_TEXTURE0);
@@ -98,5 +98,10 @@ void _cgl_drawsprite(Sprite* sprite, ShaderProgram* shader, float x, float y, ve
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDepthMask(true);
+	
+}
+
+void cgl_FreeSprite(Sprite* sprite)
+{
 	
 }

@@ -30,5 +30,6 @@ typedef struct {
 
 void cgl_InitImage(Image*, const char*, const char*, vec3, vec3);
 void cgl_DrawImage(Image*, ShaderProgram*, Camera*);
+void cgl_FreeImage(Image*);
 
 #endif

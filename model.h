@@ -23,6 +23,8 @@ typedef struct Model {
 
 void cgl_LoadModel(Model*, const char*);
 void cgl_DrawModel(Model*, ShaderProgram*, Camera*, float, float, float);
+void cgl_FreeModel(Model*);
+
 
 static void _cgl_processnode(Model*, aiNode*, const aiScene*);
 static Mesh* _cgl_processmesh(Model*, aiMesh*, const aiScene*);

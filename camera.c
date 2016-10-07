@@ -92,3 +92,8 @@ void cgl_UpdateFPSCamera(Camera* cam, double mx, double my)
 	// cam->front[2] = front[2];
 	
 }
+
+void cgl_FreeCamera(Camera* camera)
+{
+	
+}

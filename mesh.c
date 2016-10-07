@@ -6,14 +6,19 @@
 using std::stringstream;
 using std::string;
 
-void cgl_InitMesh(Mesh* mesh, list* vlist, list* ilist, list* tlist, int nv, int ni, int nt)
+void cgl_InitMesh(Mesh* mesh, list vlist, list ilist, list tlist, int nv, int ni, int nt)
 {
 	// mesh->vertices.items = vlist->items;
 	// mesh->indices.items = ilist->items;
 	// mesh->textures.items = tlist->items;
-	// memcpy(mesh->vertices.items, vlist->items, ilist->item_count*ilist->item_size);
+	list_make(&mesh->vertices, vlist.item_count, 0, true);
+	list_make(&mesh->indices, ilist.item_count, 0, true);
+	list_make(&mesh->textures, tlist.item_count, 0, true);
+	for (int i=0;i<vlist.item_count;i++) list_add_item(&mesh->vertices, list_get_index(&vlist, i), NULL);
+	for (int i=0;i<ilist.item_count;i++) list_add_item(&mesh->indices, list_get_index(&ilist, i), NULL);
+	for (int i=0;i<tlist.item_count;i++) list_add_item(&mesh->textures, list_get_index(&tlist, i), NULL);
 	
-	// _cgl_setupmesh(mesh);
+	_cgl_setupmesh(mesh);
 }
 
 void cgl_DrawMesh(Mesh* mesh, ShaderProgram* shader)
@@ -45,6 +50,13 @@ void cgl_DrawMesh(Mesh* mesh, ShaderProgram* shader)
 	glBindVertexArray(mesh->VAO);
 	glDrawElements(GL_TRIANGLES, mesh->indices.item_count, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+}
+
+void cgl_FreeMesh(Mesh* mesh)
+{
+	list_free(&mesh->vertices);
+	list_free(&mesh->indices);
+	list_free(&mesh->textures);
 }
 
 static void _cgl_setupmesh(Mesh* mesh)

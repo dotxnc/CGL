@@ -27,6 +27,12 @@ void cgl_DrawModel(Model* model, ShaderProgram* shader, Camera* cam, float x, fl
 	}
 }
 
+void cgl_FreeModel(Model* model)
+{
+	free(model->directory);
+	list_free(&model->meshes);
+}
+
 static void _cgl_processnode(Model* model, aiNode* node, const aiScene* scene)
 {
 	for (int i = 0; i < node->mNumMeshes; i++) {
@@ -44,8 +50,8 @@ static Mesh* _cgl_processmesh(Model* model, aiMesh* mesh, const aiScene* scene)
 	list _indices;
 	list _textures;
 	list_make(&_vertices, 128, sizeof(Vertex), true);
-	list_make(&_vertices, 128, sizeof(GLuint), true);
-	list_make(&_vertices, 128, sizeof(Texture), true);
+	list_make(&_indices, 128, sizeof(GLuint), true);
+	list_make(&_textures, 128, sizeof(Texture), true);
 	
 	for (int i = 0; i < mesh->mNumVertices; i++) {
 		Vertex vertex;
@@ -57,9 +63,8 @@ static Mesh* _cgl_processmesh(Model* model, aiMesh* mesh, const aiScene* scene)
 		
 	}
 	
-	Mesh* _mesh;
-	cgl_InitMesh(_mesh, &_vertices, &_indices, &_textures, 0, 0, 0);
-	
+	Mesh* _mesh = malloc(sizeof(Mesh));
+	cgl_InitMesh(_mesh, _vertices, _indices, _textures, 0, 0, 0);
 	return _mesh;
 	
 }

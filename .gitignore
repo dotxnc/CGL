@@ -1,3 +1,4 @@
 release/
 include/soil/
 include/util/
+src/*.o
